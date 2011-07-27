@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>coffeedoc.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="resources/coffeedoc.css" />
+</head>
+<body>
+  <header>
+    <h1>coffeedoc.coffee</h1>
+  </header>
+  <div id="content">
+    <span id="sidebar">
+      
+      
+      <h4>Functions</h4>
+      <ul id="functionlist">
+        
+        <li><a href="#exports.documentModule">exports.documentModule</a></li>
+        
+        <li><a href="#getNodes">getNodes</a></li>
+        
+        <li><a href="#getClasses">getClasses</a></li>
+        
+        <li><a href="#getFunctions">getFunctions</a></li>
+        
+        <li><a href="#documentClass">documentClass</a></li>
+        
+        <li><a href="#documentFunction">documentFunction</a></li>
+        
+        <li><a href="#removeLeadingWhitespace">removeLeadingWhitespace</a></li>
+        
+      </ul>
+      
+    </span>
+    <span id="main">
+      <div id="content">
+        
+        <div id="module_docstring">
+          <h1>Documentation functions</h1>
+
+<p>These functions extract relevant documentation info from AST nodes as
+returned by the coffeescript parser.</p>
+        </div>
+        
+        
+        
+        <div id="functions">
+          <h2>Functions</h2>
+          
+          <div class="function">
+            <div class="header">
+              <a id="exports.documentModule"><h3>exports.documentModule(script)</h3></a>
+            </div>
+            
+            <div>
+              <p>Given a module's source code, returns module information in the form:</p>
+
+<pre><code>{
+    "docstring": "Module docstring",
+    "classes": [class1, class1...],
+    "functions": [func1, func2...]
+}
+</code></pre>
+            </div>
+            
+          </div>
+          
+          <div class="function">
+            <div class="header">
+              <a id="getNodes"><h3>getNodes(script)</h3></a>
+            </div>
+            
+            <div>
+              <p>Generates the AST from coffeescript source code.  Adds a 'type' attribute
+to each node containing the name of the node's constructor, and returns
+the expressions array</p>
+            </div>
+            
+          </div>
+          
+          <div class="function">
+            <div class="header">
+              <a id="getClasses"><h3>getClasses(nodes)</h3></a>
+            </div>
+            
+            <div>
+              <p>Returns all top-level class nodes from the AST as returned by
+getNodeTypes</p>
+            </div>
+            
+          </div>
+          
+          <div class="function">
+            <div class="header">
+              <a id="getFunctions"><h3>getFunctions(nodes)</h3></a>
+            </div>
+            
+            <div>
+              <p>Returns all top-level named function nodes from the AST as returned by
+getNodeTypes</p>
+            </div>
+            
+          </div>
+          
+          <div class="function">
+            <div class="header">
+              <a id="documentClass"><h3>documentClass(cls)</h3></a>
+            </div>
+            
+            <div>
+              <p>Evaluates a class object as returned by the coffeescript parser,
+returning an object of the form:</p>
+
+<pre><code>{
+    "name": "MyClass",
+    "docstring": "First comment following the class definition"
+    "parent": "MySuperClass",
+    "methods": [method1, method2...]
+}
+</code></pre>
+            </div>
+            
+          </div>
+          
+          <div class="function">
+            <div class="header">
+              <a id="documentFunction"><h3>documentFunction(func)</h3></a>
+            </div>
+            
+            <div>
+              <p>Evaluates a function object as returned by the coffeescript parser,
+returning an object of the form:</p>
+
+<pre><code>{
+    "name": "myFunc",
+    "docstring": "First comment following the function definition",
+    "params": ["param1", "param2"...]
+}
+</code></pre>
+            </div>
+            
+          </div>
+          
+          <div class="function">
+            <div class="header">
+              <a id="removeLeadingWhitespace"><h3>removeLeadingWhitespace(str)</h3></a>
+            </div>
+            
+            <div>
+              <p>Given a string, returns it with leading whitespace removed but with
+indentation preserved</p>
+            </div>
+            
+          </div>
+          
+        </div>
+        
+      </div>
+    </span>
+  </div>
+</body>
+</html>

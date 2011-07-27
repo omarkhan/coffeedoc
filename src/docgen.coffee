@@ -50,7 +50,7 @@ if sources.length > 0
             fs.writeFile('docs/' + path.basename(source, path.extname(source)) \
                          + '.html', html)
 
-    # Write css stylesheet to docs/resources/
-    fs.mkdir 'docs/resources', '755', ->
-        fs.writeFile('docs/resources/coffeedoc.css', css)
+        # Write css stylesheet to docs/resources/
+        fs.mkdir 'docs/resources', '755', ->
+            fs.writeFile('docs/resources/coffeedoc.css', css)
 

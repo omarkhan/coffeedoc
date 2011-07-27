@@ -4,28 +4,28 @@ CoffeeDoc
 An API documentation generator for CoffeeScript
 -----------------------------------------------
 
-CoffeeDoc is a simple API documentation generator for [CoffeeScript][]. It reads python-style docstrings in your CoffeeScript class and function definitions, passes them through [Markdown](http://daringfireball.net/projects/markdown/syntax), and outputs the result into easy to read HTML.
+CoffeeDoc is a simple API documentation generator for [CoffeeScript][]. It reads python-style docstrings in your CoffeeScript class and function definitions, passes them through [Markdown](http://daringfireball.net/projects/markdown/syntax), and outputs the result as easy to read HTML.
 
 The docstring convention CoffeeDoc uses is inspired by Python, and looks like this:
 
-    ```CoffeeScript
-    class MyClass extends Superclass
-        ###
-        This docstring documents MyClass. It can include *Markdown* syntax,
-        which will be converted to html.
-        ###
-        constructor: (@args) ->
-            ### Constructor documentation goes here. ###
-    
-        method: (args) ->
-            ### This is a method of MyClass ###
-    
-    myFunc = (arg1, arg2, args...) ->
-        ###
-        This function will be documented by CoffeeDoc
-        ###
-        doSomething()
-    ```
+```CoffeeScript
+class MyClass extends Superclass
+    ###
+    This docstring documents MyClass. It can include *Markdown* syntax,
+    which will be converted to html.
+    ###
+    constructor: (@args) ->
+        ### Constructor documentation goes here. ###
+
+    method: (args) ->
+        ### This is a method of MyClass ###
+
+myFunc = (arg1, arg2, args...) ->
+    ###
+    This function will be documented by CoffeeDoc
+    ###
+    doSomething()
+```
 
 CoffeeDoc is inspired by the excellent [Docco][], and is intended for projects that require more structured API documentation.
 
@@ -64,4 +64,5 @@ CoffeeDoc is © 2011 Omar Khan, released under the MIT licence. Use it, fork it.
 [CoffeeScript]: http://jashkenas.github.com/coffee-script/
 [Docco]: http://jashkenas.github.com/docco/
 [Node.js]: http://nodejs.org/
+[eco]: https://github.com/sstephenson/eco
 [Showdown]: http://softwaremaniacs.org/playground/showdown-highlight/

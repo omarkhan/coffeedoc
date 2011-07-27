@@ -36,6 +36,7 @@ header h1 {
     background-color: #f4f4ff;
     padding: 10px;
     border-right: 1px dotted #ccd;
+    min-width: 150px;
 }
 #classlist, #functionlist {
     list-style-type: none;

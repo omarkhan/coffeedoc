@@ -35,7 +35,7 @@ myFunc = (arg1, arg2, args...) ->
     doSomething()
 ```
 
-The generated documentation can be seen [here](http://omarkhan.github.com/coffeedoc/example.html).
+The documentation generated from the above script can be seen [here](http://omarkhan.github.com/coffeedoc/example.html). For a more interesting example, here is [the result of running coffeedoc against `src/coffeedoc.coffee`](http://omarkhan.github.com/coffeedoc/coffeedoc.html).
 
 ### Installation ###
 

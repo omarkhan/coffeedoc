@@ -8,7 +8,7 @@ CoffeeDoc is a simple API documentation generator for [CoffeeScript][]. It reads
 
 The docstring convention CoffeeDoc uses is inspired by Python, and looks like this:
 
-```CoffeeScript
+```coffeescript
 class MyClass extends Superclass
     ###
     This docstring documents MyClass. It can include *Markdown* syntax,

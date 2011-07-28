@@ -25,6 +25,8 @@
         
         <li><a href="#getFunctions">getFunctions</a></li>
         
+        <li><a href="#getNodeName">getNodeName</a></li>
+        
         <li><a href="#documentClass">documentClass</a></li>
         
         <li><a href="#documentFunction">documentFunction</a></li>
@@ -40,8 +42,8 @@
         <div id="module_docstring">
           <h1>Documentation functions</h1>
 
-<p>These functions extract relevant documentation info from AST nodes as
-returned by the coffeescript parser.</p>
+<p>These functions extract relevant documentation info from AST nodes as returned
+by the coffeescript parser.</p>
         </div>
         
         
@@ -86,8 +88,7 @@ the expressions array</p>
             </div>
             
             <div>
-              <p>Returns all top-level class nodes from the AST as returned by
-getNodeTypes</p>
+              <p>Returns all top-level class nodes from the AST as returned by getNodes</p>
             </div>
             
           </div>
@@ -99,7 +100,18 @@ getNodeTypes</p>
             
             <div>
               <p>Returns all top-level named function nodes from the AST as returned by
-getNodeTypes</p>
+getNodes</p>
+            </div>
+            
+          </div>
+          
+          <div class="function">
+            <div class="header">
+              <a id="getNodeName"><h3>getNodeName(node)</h3></a>
+            </div>
+            
+            <div>
+              <p>Given a node, returns its full name</p>
             </div>
             
           </div>
@@ -110,8 +122,8 @@ getNodeTypes</p>
             </div>
             
             <div>
-              <p>Evaluates a class object as returned by the coffeescript parser,
-returning an object of the form:</p>
+              <p>Evaluates a class object as returned by the coffeescript parser, returning
+an object of the form:</p>
 
 <pre><code>{
     "name": "MyClass",

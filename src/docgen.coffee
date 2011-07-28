@@ -7,7 +7,7 @@ This script generates html documentation from a coffeescript source file
 fs = require('fs')
 path = require('path')
 eco = require('eco')
-showdown = require(__dirname + '/showdown').Showdown
+showdown = require(__dirname + '/../vendor/showdown').Showdown
 coffeedoc = require(__dirname + '/coffeedoc')
 
 renderMarkdown = (obj) ->

@@ -1,8 +1,8 @@
 ###
 Documentation functions
 =======================
-These functions extract relevant documentation info from AST nodes as
-returned by the coffeescript parser.
+These functions extract relevant documentation info from AST nodes as returned
+by the coffeescript parser.
 ###
 
 coffeescript = require('coffee-script')
@@ -44,8 +44,7 @@ getNodes = (script) ->
 
 getClasses = (nodes) ->
     ###
-    Returns all top-level class nodes from the AST as returned by
-    getNodeTypes
+    Returns all top-level class nodes from the AST as returned by getNodes
     ###
     return (n for n in nodes when n.type == 'Class' \
             or n.type == 'Assign' and n.value.type == 'Class')
@@ -53,7 +52,7 @@ getClasses = (nodes) ->
 getFunctions = (nodes) ->
     ###
     Returns all top-level named function nodes from the AST as returned by
-    getNodeTypes
+    getNodes
     ###
     return (n for n in nodes \
             when n.type == 'Assign' and n.value.type == 'Code')
@@ -70,8 +69,8 @@ getNodeName = (node) ->
 
 documentClass = (cls) ->
     ###
-    Evaluates a class object as returned by the coffeescript parser,
-    returning an object of the form:
+    Evaluates a class object as returned by the coffeescript parser, returning
+    an object of the form:
     
         {
             "name": "MyClass",

@@ -58,6 +58,16 @@ getFunctions = (nodes) ->
     return (n for n in nodes \
             when n.type == 'Assign' and n.value.type == 'Code')
 
+getNodeName = (node) ->
+    ###
+    Given a node, returns its full name
+    ###
+    name = node.variable.base.value
+    properties = node.variable.properties
+    if properties.length > 0
+        name += '.' + (prop.name.value for prop in properties).join('.')
+    return name
+
 documentClass = (cls) ->
     ###
     Evaluates a class object as returned by the coffeescript parser,
@@ -86,7 +96,7 @@ documentClass = (cls) ->
                when n.type == 'Assign' and n.value.type == 'Code')
 
     doc =
-        name: cls.variable.base.value
+        name: getNodeName(cls)
         docstring: docstring
         parent: cls.parent?.base.value or null
         methods: (documentFunction(m) for m in methods)
@@ -104,13 +114,6 @@ documentFunction = (func) ->
             "params": ["param1", "param2"...]
         }
     ###
-    func_name = func.variable.base.value
-    properties = func.variable.properties
-    if properties.length > 0
-        # Function not assigned to a module-level variable; get its name from
-        # the container object
-        func_name += '.' + (prop.name.value for prop in properties).join('.')
-
     # Get docstring
     first_obj = func.value.body.expressions[0]
     if first_obj?.comment
@@ -126,7 +129,7 @@ documentFunction = (func) ->
         params = []
 
     doc =
-        name: func_name
+        name: getNodeName(func)
         docstring: docstring
         params: params
 

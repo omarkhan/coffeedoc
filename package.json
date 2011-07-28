@@ -1,13 +1,20 @@
 {
   "name": "coffeedoc",
   "description": "An API documentation generator for CoffeeScript",
-  "keywords": ["documentation", "docs", "generator", "coffeescript"],
+  "keywords": [
+    "documentation",
+    "docs",
+    "generator",
+    "coffeescript"
+  ],
   "author": "Omar Khan",
-  "version": "0.1.1",
-  "licenses": [{
-    "type": "MIT",
-    "url": "http://opensource.org/licenses/mit-license.php"
-  }],
+  "version": "0.1.2",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/mit-license.php"
+    }
+  ],
   "engines": {
     "node": ">=0.4.10"
   },
@@ -16,10 +23,11 @@
     "eco": ">=1.1.0-rc-1"
   },
   "directories": {
-    "lib" : "./lib"
+    "lib": "./lib"
   },
-  "main" : "./lib/coffeedoc",
+  "main": "./lib/coffeedoc",
   "bin": {
     "coffeedoc": "./bin/coffeedoc"
-  }
+  },
+  "devDependencies": {}
 }

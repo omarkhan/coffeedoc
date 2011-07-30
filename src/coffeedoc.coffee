@@ -145,12 +145,11 @@ removeLeadingWhitespace = (str) ->
     if lines.length == 0
         return null
 
-    # Measure indentation of first line
-    indentation = 0
-    for char in lines[0]
-        if char == ' '
-            indentation += 1
-        else break
+    # Get least indented non-blank line
+    indentation = for line in lines
+        if /^ *$/.test(line) then continue
+        line.match(/^ */)[0].length
+    indentation = Math.min(indentation...)
 
     leading_whitespace = new RegExp("^ {#{ indentation }}")
     return (line.replace(leading_whitespace, '') for line in lines).join('\n')

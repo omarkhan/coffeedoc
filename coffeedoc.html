@@ -24,10 +24,6 @@
         
         <li><a href="#getDependencies">getDependencies</a></li>
         
-        <li><a href="#getClasses">getClasses</a></li>
-        
-        <li><a href="#getFunctions">getFunctions</a></li>
-        
         <li><a href="#getFullName">getFullName</a></li>
         
         <li><a href="#documentClass">documentClass</a></li>
@@ -55,11 +51,12 @@ by the coffeescript parser.</p>
         
         <div class="function">
           <div class="header">
-            <a id="exports.documentModule"><h3>exports.documentModule(script)</h3></a>
+            <a id="exports.documentModule"><h3>exports.documentModule(script, parser)</h3></a>
           </div>
           
           <div>
-            <p>Given a module's source code, returns module information in the form:</p>
+            <p>Given a module's source code and an AST parser, returns module information
+in the form:</p>
 
 <pre><code>{
     "docstring": "Module docstring",
@@ -67,6 +64,8 @@ by the coffeescript parser.</p>
     "functions": [func1, func2...]
 }
 </code></pre>
+
+<p>AST parsers are defined in the <code>parsers.coffee</code> module</p>
           </div>
           
         </div>
@@ -109,29 +108,6 @@ dependencies:</p>
 </code></pre>
 
 <p>In the second example, <code>__dirname</code> is replaced with a <code>.</code> in the output.</p>
-          </div>
-          
-        </div>
-        
-        <div class="function">
-          <div class="header">
-            <a id="getClasses"><h3>getClasses(nodes)</h3></a>
-          </div>
-          
-          <div>
-            <p>Returns all top-level class nodes from the AST as returned by getNodes</p>
-          </div>
-          
-        </div>
-        
-        <div class="function">
-          <div class="header">
-            <a id="getFunctions"><h3>getFunctions(nodes)</h3></a>
-          </div>
-          
-          <div>
-            <p>Returns all top-level named function nodes from the AST as returned by
-getNodes</p>
           </div>
           
         </div>

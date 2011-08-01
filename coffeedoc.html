@@ -4,28 +4,31 @@
 <head>
   <title>coffeedoc.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" media="all" href="resources/coffeedoc.css" />
+  <link rel="stylesheet" media="all" href="resources/base.css" />
+  <link rel="stylesheet" media="all" href="resources/module.css" />
 </head>
 <body>
   <header>
     <h1>coffeedoc.coffee</h1>
   </header>
   <div id="content">
-    <span id="sidebar">
+    <div id="sidebar">
       
       
       <h4>Functions</h4>
-      <ul id="functionlist">
+      <ul class="functionlist">
         
         <li><a href="#exports.documentModule">exports.documentModule</a></li>
         
         <li><a href="#getNodes">getNodes</a></li>
         
+        <li><a href="#getDependencies">getDependencies</a></li>
+        
         <li><a href="#getClasses">getClasses</a></li>
         
         <li><a href="#getFunctions">getFunctions</a></li>
         
-        <li><a href="#getNodeName">getNodeName</a></li>
+        <li><a href="#getFullName">getFullName</a></li>
         
         <li><a href="#documentClass">documentClass</a></li>
         
@@ -35,29 +38,28 @@
         
       </ul>
       
-    </span>
-    <span id="main">
-      <div id="content">
-        
-        <div id="module_docstring">
-          <h1>Documentation functions</h1>
+    </div>
+    <div id="main">
+      
+      <div id="module_docstring">
+        <h1>Documentation functions</h1>
 
 <p>These functions extract relevant documentation info from AST nodes as returned
 by the coffeescript parser.</p>
-        </div>
+      </div>
+      
+      
+      
+      <div id="functions">
+        <h2>Functions</h2>
         
-        
-        
-        <div id="functions">
-          <h2>Functions</h2>
+        <div class="function">
+          <div class="header">
+            <a id="exports.documentModule"><h3>exports.documentModule(script)</h3></a>
+          </div>
           
-          <div class="function">
-            <div class="header">
-              <a id="exports.documentModule"><h3>exports.documentModule(script)</h3></a>
-            </div>
-            
-            <div>
-              <p>Given a module's source code, returns module information in the form:</p>
+          <div>
+            <p>Given a module's source code, returns module information in the form:</p>
 
 <pre><code>{
     "docstring": "Module docstring",
@@ -65,64 +67,93 @@ by the coffeescript parser.</p>
     "functions": [func1, func2...]
 }
 </code></pre>
-            </div>
-            
           </div>
           
-          <div class="function">
-            <div class="header">
-              <a id="getNodes"><h3>getNodes(script)</h3></a>
-            </div>
-            
-            <div>
-              <p>Generates the AST from coffeescript source code.  Adds a 'type' attribute
+        </div>
+        
+        <div class="function">
+          <div class="header">
+            <a id="getNodes"><h3>getNodes(script)</h3></a>
+          </div>
+          
+          <div>
+            <p>Generates the AST from coffeescript source code.  Adds a 'type' attribute
 to each node containing the name of the node's constructor, and returns
 the expressions array</p>
-            </div>
-            
           </div>
           
-          <div class="function">
-            <div class="header">
-              <a id="getClasses"><h3>getClasses(nodes)</h3></a>
-            </div>
-            
-            <div>
-              <p>Returns all top-level class nodes from the AST as returned by getNodes</p>
-            </div>
-            
+        </div>
+        
+        <div class="function">
+          <div class="header">
+            <a id="getDependencies"><h3>getDependencies(nodes)</h3></a>
           </div>
           
-          <div class="function">
-            <div class="header">
-              <a id="getFunctions"><h3>getFunctions(nodes)</h3></a>
-            </div>
-            
-            <div>
-              <p>Returns all top-level named function nodes from the AST as returned by
+          <div>
+            <p>Parses CommonJS require statements and returns a hash of module
+dependencies:</p>
+
+<pre><code>{
+    "local.name": "path/to/module"
+}
+</code></pre>
+
+<p>This currently works with the following <code>require</code> calls:</p>
+
+<pre><code>local_name = require("path/to/module")
+</code></pre>
+
+<p>or</p>
+
+<pre><code>local_name = require(__dirname + "/path/to/module")
+</code></pre>
+
+<p>In the second example, <code>__dirname</code> is replaced with a <code>.</code> in the output.</p>
+          </div>
+          
+        </div>
+        
+        <div class="function">
+          <div class="header">
+            <a id="getClasses"><h3>getClasses(nodes)</h3></a>
+          </div>
+          
+          <div>
+            <p>Returns all top-level class nodes from the AST as returned by getNodes</p>
+          </div>
+          
+        </div>
+        
+        <div class="function">
+          <div class="header">
+            <a id="getFunctions"><h3>getFunctions(nodes)</h3></a>
+          </div>
+          
+          <div>
+            <p>Returns all top-level named function nodes from the AST as returned by
 getNodes</p>
-            </div>
-            
           </div>
           
-          <div class="function">
-            <div class="header">
-              <a id="getNodeName"><h3>getNodeName(node)</h3></a>
-            </div>
-            
-            <div>
-              <p>Given a node, returns its full name</p>
-            </div>
-            
+        </div>
+        
+        <div class="function">
+          <div class="header">
+            <a id="getFullName"><h3>getFullName(variable)</h3></a>
           </div>
           
-          <div class="function">
-            <div class="header">
-              <a id="documentClass"><h3>documentClass(cls)</h3></a>
-            </div>
-            
-            <div>
-              <p>Evaluates a class object as returned by the coffeescript parser, returning
+          <div>
+            <p>Given a variable node, returns its full name</p>
+          </div>
+          
+        </div>
+        
+        <div class="function">
+          <div class="header">
+            <a id="documentClass"><h3>documentClass(cls)</h3></a>
+          </div>
+          
+          <div>
+            <p>Evaluates a class object as returned by the coffeescript parser, returning
 an object of the form:</p>
 
 <pre><code>{
@@ -132,17 +163,17 @@ an object of the form:</p>
     "methods": [method1, method2...]
 }
 </code></pre>
-            </div>
-            
           </div>
           
-          <div class="function">
-            <div class="header">
-              <a id="documentFunction"><h3>documentFunction(func)</h3></a>
-            </div>
-            
-            <div>
-              <p>Evaluates a function object as returned by the coffeescript parser,
+        </div>
+        
+        <div class="function">
+          <div class="header">
+            <a id="documentFunction"><h3>documentFunction(func)</h3></a>
+          </div>
+          
+          <div>
+            <p>Evaluates a function object as returned by the coffeescript parser,
 returning an object of the form:</p>
 
 <pre><code>{
@@ -151,26 +182,25 @@ returning an object of the form:</p>
     "params": ["param1", "param2"...]
 }
 </code></pre>
-            </div>
-            
           </div>
           
-          <div class="function">
-            <div class="header">
-              <a id="removeLeadingWhitespace"><h3>removeLeadingWhitespace(str)</h3></a>
-            </div>
-            
-            <div>
-              <p>Given a string, returns it with leading whitespace removed but with
+        </div>
+        
+        <div class="function">
+          <div class="header">
+            <a id="removeLeadingWhitespace"><h3>removeLeadingWhitespace(str)</h3></a>
+          </div>
+          
+          <div>
+            <p>Given a string, returns it with leading whitespace removed but with
 indentation preserved</p>
-            </div>
-            
           </div>
           
         </div>
         
       </div>
-    </span>
+      
+    </div>
   </div>
 </body>
 </html>

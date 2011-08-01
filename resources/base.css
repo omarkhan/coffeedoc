@@ -5,7 +5,7 @@ body {
     color: #444;
     margin: 0; padding: 0;
 }
-pre {
+code {
     padding: 15px;
     font-size: 12px; line-height: 18px;
     font-family: Menlo, Monaco, Consolas, "Lucida Console", monospace;
@@ -17,10 +17,6 @@ a, a:visited {
 a:hover {
     color: #666;
 }
-#content {
-    display: table;
-    width: 100%;
-}
 header {
     width: 100%;
     background-color: #eef;
@@ -31,6 +27,9 @@ header h1 {
     padding: 20px;
     color: #667;
 }
+#content {
+    display: table;
+}
 #sidebar {
     display: table-cell;
     background-color: #f4f4ff;
@@ -38,40 +37,15 @@ header h1 {
     border-right: 1px dotted #ccd;
     min-width: 150px;
 }
-#classlist, #functionlist {
-    list-style-type: none;
-    padding-left: 5px;
-}
 #main {
+    width: 650px;
     display: table-cell;
     padding: 20px;
-}
-#content {
-    width: 650px;
 }
 #content > div {
     border-bottom: 1px dotted #ccd;
 }
-div.class, div.function {
-    background-color: #eef;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid #ccd;
-}
-div.class > div, div.function > div {
-    padding: 10px;
-    margin: 0;
-}
-div.class .header, div.function .header {
-    background-color: #ddf;
-}
-div.header h3 {
-    display: inline;
-}
-a.parent {
-    color: #779;
-}
-div.method {
-    padding: 0 10px;
-    border-top: 1px solid #ccd;
+.classlist, .functionlist {
+    list-style-type: none;
+    padding-left: 5px;
 }

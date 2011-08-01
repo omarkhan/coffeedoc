@@ -57,14 +57,13 @@ getFunctions = (nodes) ->
     return (n for n in nodes \
             when n.type == 'Assign' and n.value.type == 'Code')
 
-getNodeName = (node) ->
+getFullName = (variable) ->
     ###
-    Given a node, returns its full name
+    Given a variable node, returns its full name
     ###
-    name = node.variable.base.value
-    properties = node.variable.properties
-    if properties.length > 0
-        name += '.' + (prop.name.value for prop in properties).join('.')
+    name = variable.base.value
+    if variable.properties.length > 0
+        name += '.' + (p.name.value for p in variable.properties).join('.')
     return name
 
 documentClass = (cls) ->
@@ -103,10 +102,15 @@ documentClass = (cls) ->
         (n for n in cls.body.expressions[0].base.objects \
          when n.type == 'Assign' and n.value.type == 'Code')
 
+    if cls.parent?
+        parent = getFullName(cls.parent)
+    else
+        parent = null
+
     doc =
-        name: getNodeName(cls)
+        name: getFullName(cls.variable)
         docstring: docstring
-        parent: cls.parent?.base.value or null
+        parent: parent
         methods: (documentFunction(m) for m in methods)
 
     return doc
@@ -137,7 +141,7 @@ documentFunction = (func) ->
         params = []
 
     doc =
-        name: getNodeName(func)
+        name: getFullName(func.variable)
         docstring: docstring
         params: params
 

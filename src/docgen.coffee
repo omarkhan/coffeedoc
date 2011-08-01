@@ -9,6 +9,7 @@ path = require('path')
 eco = require('eco')
 showdown = require(__dirname + '/../vendor/showdown').Showdown
 coffeedoc = require(__dirname + '/coffeedoc')
+parsers = require(__dirname + '/parsers')
 
 renderMarkdown = (obj) ->
     ###
@@ -26,8 +27,29 @@ base_css = fs.readFileSync(__dirname + '/../resources/base.css', 'utf-8')
 module_css = fs.readFileSync(__dirname + '/../resources/module.css', 'utf-8')
 index_css = fs.readFileSync(__dirname + '/../resources/index.css', 'utf-8')
 
+# Command line options
+OPTIONS =
+    '--commonjs': ' Use if target scripts use CommonJS for module loading (default)'
+    '--requirejs': 'Use if target scripts use RequireJS for module loading'
+
+opts = process.argv[2...process.argv.length]
+if opts.length == 0
+    console.log('Usage: coffeedoc [options] targets\n')
+    console.log('Options:')
+    for flag, description of OPTIONS
+        console.log('    ' + flag + ': ' + description)
+    process.exit()
+if opts[0] == '--requirejs'
+    opts.shift()
+    parser = new parsers.RequireJSParser()
+else if opts[0] == '--commonjs'
+    opts.shift()
+    parser = new parsers.CommonJSParser()
+else
+    parser = new parsers.CommonJSParser()
+sources = opts
+
 # Iterate over source scripts
-sources = process.argv[2...process.argv.length]
 if sources.length > 0
     modules = []
     source_names = (path.basename(s, path.extname(s)) for s in sources)
@@ -41,7 +63,7 @@ if sources.length > 0
             documentation =
                 filename: source_names[idx] + '.html'
                 module_name: path.basename(source)
-                module: coffeedoc.documentModule(script)
+                module: coffeedoc.documentModule(script, parser)
 
             # Check for classes inheriting from classes in other modules
             for cls in documentation.module.classes when cls.parent

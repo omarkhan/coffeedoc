@@ -7,15 +7,18 @@ by the coffeescript parser.
 
 coffeescript = require('coffee-script')
 
-exports.documentModule = (script) ->
+exports.documentModule = (script, parser) ->
     ###
-    Given a module's source code, returns module information in the form:
+    Given a module's source code and an AST parser, returns module information
+    in the form:
 
         {
             "docstring": "Module docstring",
             "classes": [class1, class1...],
             "functions": [func1, func2...]
         }
+
+    AST parsers are defined in the `parsers.coffee` module
     ###
     nodes = getNodes(script)
     first_obj = nodes[0]
@@ -27,8 +30,8 @@ exports.documentModule = (script) ->
     doc =
         docstring: docstring
         deps: getDependencies(nodes)
-        classes: (documentClass(c) for c in getClasses(nodes))
-        functions: (documentFunction(f) for f in getFunctions(nodes))
+        classes: (documentClass(c) for c in parser.getClasses(nodes))
+        functions: (documentFunction(f) for f in parser.getFunctions(nodes))
 
     return doc
 
@@ -78,21 +81,6 @@ getDependencies = (nodes) ->
             local_name = getFullName(n.variable)
             deps[local_name] = module_path
     return deps
-
-getClasses = (nodes) ->
-    ###
-    Returns all top-level class nodes from the AST as returned by getNodes
-    ###
-    return (n for n in nodes when n.type == 'Class' \
-            or n.type == 'Assign' and n.value.type == 'Class')
-
-getFunctions = (nodes) ->
-    ###
-    Returns all top-level named function nodes from the AST as returned by
-    getNodes
-    ###
-    return (n for n in nodes \
-            when n.type == 'Assign' and n.value.type == 'Code')
 
 getFullName = (variable) ->
     ###

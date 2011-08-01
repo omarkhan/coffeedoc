@@ -23,9 +23,10 @@ exports.documentModule = (script) ->
         docstring = removeLeadingWhitespace(first_obj.comment)
     else
         docstring = null
-    
+
     doc =
         docstring: docstring
+        deps: getDependencies(nodes)
         classes: (documentClass(c) for c in getClasses(nodes))
         functions: (documentFunction(f) for f in getFunctions(nodes))
 
@@ -41,6 +42,42 @@ getNodes = (script) ->
     root_node.traverseChildren false, (node) ->
         node.type = node.constructor.name
     return root_node.expressions
+
+getDependencies = (nodes) ->
+    ###
+    Parses CommonJS require statements and returns a hash of module
+    dependencies:
+
+        {
+            "local.name": "path/to/module"
+        }
+
+    This currently works with the following `require` calls:
+
+        local_name = require("path/to/module")
+
+    or
+
+        local_name = require(__dirname + "/path/to/module")
+
+    In the second example, `__dirname` is replaced with a `.` in the output.
+    ###
+    stripQuotes = (str) ->
+        return str.replace(/('|\")/g, '')
+
+    deps = {}
+    for n in nodes when n.type == 'Assign'
+        if n.value.type == 'Call' and n.value.variable.base.value == 'require'
+            arg = n.value.args[0]
+            if arg.type == 'Value'
+                module_path = stripQuotes(arg.base.value)
+            else if arg.type == 'Op' and arg.operator == '+'
+                module_path = '.' + stripQuotes(arg.second.base.value)
+            else
+                continue
+            local_name = getFullName(n.variable)
+            deps[local_name] = module_path
+    return deps
 
 getClasses = (nodes) ->
     ###

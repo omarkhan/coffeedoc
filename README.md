@@ -55,7 +55,7 @@ CoffeeDoc can be run from the command line:
 
     coffeedoc src/*.coffee
 
-Generated documentation is saved to the `docs/` folder under the current directory.
+Generated documentation is saved to the `docs/` folder under the current directory. If you wish to document several modules, make sure you generate all the docs with a single command -- this ensures that they will all appear in the `index.html` file.
 
 ### How it works ###
 

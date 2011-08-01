@@ -20,13 +20,18 @@ renderMarkdown = (obj) ->
     return null
 
 # Fetch resources
-template = fs.readFileSync(__dirname + '/../resources/coffeedoc.eco', 'utf-8')
-css = fs.readFileSync(__dirname + '/../resources/coffeedoc.css', 'utf-8')
+module_template = fs.readFileSync(__dirname + '/../resources/module.eco', 'utf-8')
+index_template = fs.readFileSync(__dirname + '/../resources/index.eco', 'utf-8')
+base_css = fs.readFileSync(__dirname + '/../resources/base.css', 'utf-8')
+module_css = fs.readFileSync(__dirname + '/../resources/module.css', 'utf-8')
+index_css = fs.readFileSync(__dirname + '/../resources/index.css', 'utf-8')
 
 # Iterate over source scripts
 sources = process.argv[2...process.argv.length]
-source_names = (path.basename(s, path.extname(s)) for s in sources)
 if sources.length > 0
+    modules = []
+    source_names = (path.basename(s, path.extname(s)) for s in sources)
+    
     # Make docs/ directory under current dir
     fs.mkdir 'docs', '755', ->
         for source, idx in sources
@@ -34,6 +39,7 @@ if sources.length > 0
 
             # Fetch documentation information
             documentation =
+                filename: source_names[idx] + '.html'
                 module_name: path.basename(source)
                 module: coffeedoc.documentModule(script)
 
@@ -57,12 +63,21 @@ if sources.length > 0
             renderMarkdown(f) for f in documentation.module.functions
 
             # Generate docs
-            html = eco.render(template, documentation)
+            html = eco.render(module_template, documentation)
 
             # Write to file
-            fs.writeFile('docs/' + source_names[idx] + '.html', html)
+            fs.writeFile('docs/' + documentation.filename, html)
 
-        # Write css stylesheet to docs/resources/
+            # Save to modules array for the index page
+            modules.push(documentation)
+
+        # Write css stylesheets to docs/resources/
         fs.mkdir 'docs/resources', '755', ->
-            fs.writeFile('docs/resources/coffeedoc.css', css)
+            fs.writeFile('docs/resources/base.css', base_css)
+            fs.writeFile('docs/resources/module.css', module_css)
+            fs.writeFile('docs/resources/index.css', index_css)
+
+        # Make index page
+        index = eco.render(index_template, modules: modules)
+        fs.writeFile('docs/index.html', index)
 

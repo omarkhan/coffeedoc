@@ -44,7 +44,11 @@
             <div class="header">
               <a id="<%= cls.name %>"><h3><%= cls.name %></h3></a>
               <% if cls.parent: %>
+              <% if cls.parent_module?: %>
+              <a class="parent" href="<%= cls.parent_module %>.html#<%= cls.parent_name %>"><h3>extends <%= cls.parent %></h3></a>
+              <% else: %>
               <a class="parent" href="#<%= cls.parent %>"><h3>extends <%= cls.parent %></h3></a>
+              <% end %>
               <% end %>
             </div>
             <div class="class_content">

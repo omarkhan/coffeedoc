@@ -83,16 +83,25 @@ documentClass = (cls) ->
         # Class assigned to variable -- ignore the variable definition
         cls = cls.value
 
+    # Check if class is empty
+    emptyclass = not cls.body.expressions[0]?.base?
+
     # Get docstring
-    first_obj = cls.body.expressions[0].base.objects[0]
+    first_obj = if emptyclass
+        cls.body.expressions[0]
+    else
+        cls.body.expressions[0].base?.objects[0]
     if first_obj?.type == 'Comment'
         docstring = removeLeadingWhitespace(first_obj.comment)
     else
         docstring = null
 
     # Get methods
-    methods = (n for n in cls.body.expressions[0].base.objects \
-               when n.type == 'Assign' and n.value.type == 'Code')
+    methods = if emptyclass
+        []
+    else
+        (n for n in cls.body.expressions[0].base.objects \
+         when n.type == 'Assign' and n.value.type == 'Code')
 
     doc =
         name: getNodeName(cls)

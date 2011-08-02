@@ -3,13 +3,31 @@ body {
     font-size: 15px;
     line-height: 22px;
     color: #444;
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
 }
-pre, code {
-    margin: 0; padding: 0;
+code {
+    padding: 2px 4px;
+    border: 1px solid #ccc;
+    background: #eee;
     font-size: 12px; line-height: 18px;
-    font-family: Menlo, Monaco, Consolas, "Lucida Console", monospace;
+    font-family: Monaco, Consolas, "Lucida Console", monospace;
+    border-radius: 2px;
 }
+
+pre {
+    padding: 10px;
+    border: 1px solid #ccc;
+    background: #eee;
+    border-radius: 4px;
+}
+
+pre code {
+    border: 0;
+    background: none;
+    border-radius: 0;
+}
+
 a, a:visited {
     color: #444;
     text-decoration: none;

@@ -29,5 +29,7 @@
   "bin": {
     "coffeedoc": "./bin/coffeedoc"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jasmine-node": ">=1.0.6"
+  }
 }

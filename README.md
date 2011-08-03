@@ -58,6 +58,12 @@ CoffeeDoc can be run from the command line:
 
 Generated documentation is saved to the `docs/` folder under the current directory. If you wish to document several modules, make sure you generate all the docs with a single command -- this ensures that they will all appear in the `index.html` file.
 
+### Testing ###
+
+Running the tests require that you have jasmine-node installed. If you've pull the source and installed the package using `npm link`, this will have been downloaded for you. The execute the tests, run the following in the `coffeedoc/` folder:
+
+    jasmine-node --coffee test/
+
 ### How it works ###
 
 CoffeeDoc uses the CoffeeScript parser to generate a parse tree for the given source files. It then extracts the relevant information from the parse tree: class and function names, class member functions, function argument lists and docstrings.

@@ -20,7 +20,7 @@ exports.documentModule = (script, parser) ->
 
     AST parsers are defined in the `parsers.coffee` module
     ###
-    nodes = getNodes(script)
+    nodes = parser.getNodes(coffeescript.nodes(script))
     first_obj = nodes[0]
     if first_obj?.type == 'Comment'
         docstring = removeLeadingWhitespace(first_obj.comment)
@@ -34,17 +34,6 @@ exports.documentModule = (script, parser) ->
         functions: (documentFunction(f) for f in parser.getFunctions(nodes))
 
     return doc
-
-getNodes = (script) ->
-    ###
-    Generates the AST from coffeescript source code.  Adds a 'type' attribute
-    to each node containing the name of the node's constructor, and returns
-    the expressions array
-    ###
-    root_node = coffeescript.nodes(script)
-    root_node.traverseChildren false, (node) ->
-        node.type = node.constructor.name
-    return root_node.expressions
 
 getFullName = (variable) ->
     ###

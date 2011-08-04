@@ -1,11 +1,14 @@
 ###
 Documentation functions
 =======================
+
 These functions extract relevant documentation info from AST nodes as returned
 by the coffeescript parser.
 ###
 
-coffeescript = require('coffee-script')
+helpers = require(__dirname + '/helpers')
+getNodes = helpers.getNodes
+getFullName = helpers.getFullName
 
 exports.documentModule = (script, parser) ->
     ###
@@ -34,26 +37,6 @@ exports.documentModule = (script, parser) ->
         functions: (documentFunction(f) for f in parser.getFunctions(nodes))
 
     return doc
-
-getNodes = (script) ->
-    ###
-    Generates the AST from coffeescript source code.  Adds a 'type' attribute
-    to each node containing the name of the node's constructor, and returns
-    the expressions array
-    ###
-    root_node = coffeescript.nodes(script)
-    root_node.traverseChildren false, (node) ->
-        node.type = node.constructor.name
-    return root_node.expressions
-
-getFullName = (variable) ->
-    ###
-    Given a variable node, returns its full name
-    ###
-    name = variable.base.value
-    if variable.properties.length > 0
-        name += '.' + (p.name.value for p in variable.properties).join('.')
-    return name
 
 documentClass = (cls) ->
     ###

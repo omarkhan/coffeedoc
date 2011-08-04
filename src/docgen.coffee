@@ -1,6 +1,7 @@
 ###
 Documentation generator
 =======================
+
 This script generates html documentation from a coffeescript source file
 ###
 

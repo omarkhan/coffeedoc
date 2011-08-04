@@ -20,12 +20,6 @@
         
         <li><a href="#exports.documentModule">exports.documentModule</a></li>
         
-        <li><a href="#getNodes">getNodes</a></li>
-        
-        <li><a href="#getDependencies">getDependencies</a></li>
-        
-        <li><a href="#getFullName">getFullName</a></li>
-        
         <li><a href="#documentClass">documentClass</a></li>
         
         <li><a href="#documentFunction">documentFunction</a></li>
@@ -66,59 +60,6 @@ in the form:</p>
 </code></pre>
 
 <p>AST parsers are defined in the <code>parsers.coffee</code> module</p>
-          </div>
-          
-        </div>
-        
-        <div class="function">
-          <div class="header">
-            <a id="getNodes"><h3>getNodes(script)</h3></a>
-          </div>
-          
-          <div>
-            <p>Generates the AST from coffeescript source code.  Adds a 'type' attribute
-to each node containing the name of the node's constructor, and returns
-the expressions array</p>
-          </div>
-          
-        </div>
-        
-        <div class="function">
-          <div class="header">
-            <a id="getDependencies"><h3>getDependencies(nodes)</h3></a>
-          </div>
-          
-          <div>
-            <p>Parses CommonJS require statements and returns a hash of module
-dependencies:</p>
-
-<pre><code>{
-    "local.name": "path/to/module"
-}
-</code></pre>
-
-<p>This currently works with the following <code>require</code> calls:</p>
-
-<pre><code>local_name = require("path/to/module")
-</code></pre>
-
-<p>or</p>
-
-<pre><code>local_name = require(__dirname + "/path/to/module")
-</code></pre>
-
-<p>In the second example, <code>__dirname</code> is replaced with a <code>.</code> in the output.</p>
-          </div>
-          
-        </div>
-        
-        <div class="function">
-          <div class="header">
-            <a id="getFullName"><h3>getFullName(variable)</h3></a>
-          </div>
-          
-          <div>
-            <p>Given a variable node, returns its full name</p>
           </div>
           
         </div>

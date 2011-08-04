@@ -1,11 +1,10 @@
 fs = require('fs')
-coffeescript = require('coffee-script')
 parsers = require(__dirname + '/../lib/parsers')
 parser = new parsers.RequireJSParser()
 
 readNodes = (source) ->
     script = fs.readFileSync("#{__dirname}/requirejs/#{source}.coffee", 'utf-8')
-    return parser.getNodes(coffeescript.nodes(script))
+    return parser.getNodes(script)
 
 objLength = (obj) ->
     return (k for k of obj).length

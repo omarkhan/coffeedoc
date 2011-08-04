@@ -9,17 +9,25 @@ the CoffeeScript AST. Each parser class is specific to a module loading system
 option.
 ###
 
+coffeescript = require('coffee-script')
+
+getFullName = require(__dirname + '/helpers').getFullName
+
 class BaseParser
     ###
     This base class defines the interface for parsers. Subclasses should
-    implement these methods.
+    implement the `getDependencies`, `getClasses` and `getFunctions` methods
     ###
-    getNodes: (root_node) ->
+    getNodes: (script) ->
         ###
-        Traverse the AST, adding a 'type' attribute to each node containing the
-        name of the node's constructor, and return the expressions array
+        Generates the AST from coffeescript source code.  Adds a 'type' attribute
+        to each node containing the name of the node's constructor, and returns
+        the expressions array
         ###
-        return null
+        root_node = coffeescript.nodes(script)
+        root_node.traverseChildren false, (node) ->
+            node.type = node.constructor.name
+        return root_node.expressions
 
     getDependencies: (nodes) ->
         ###
@@ -53,11 +61,6 @@ exports.CommonJSParser = class CommonJSParser extends BaseParser
         require("module")
         exports.func = ->
     ###
-    getNodes: (root_node) ->
-        root_node.traverseChildren false, (node) ->
-            node.type = node.constructor.name
-        return root_node.expressions
-
     getDependencies: (nodes) ->
         ###
         This currently works with the following `require` calls:
@@ -106,7 +109,8 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
         define [], () ->
             ... code ...
     ###
-    getNodes: (root_node) ->
+    getNodes: (script) ->
+        root_node = coffeescript.nodes(script)
         nodes = []
         moduleLdrs = ['define', 'require']
         root_node.traverseChildren false, (node) ->
@@ -133,7 +137,7 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
         arg = node.value.args[0]
         module_path = @_getModulePath(arg)
         if module_path?
-            local_name = @_getFullName(node.variable)
+            local_name = getFullName(node.variable)
             deps[local_name] = module_path
 
     _parseObject: (node, deps) ->
@@ -167,12 +171,6 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
         else if mod.type is 'Op' and mod.operator is '+'
             return '.' + @_stripQuotes(mod.second.base.value)
         return null
-
-    _getFullName: (variable) ->
-        name = variable.base.value
-        if variable.properties.length > 0
-            name += '.' + (p.name.value for p in variable.properties).join('.')
-        return name
 
     getDependencies: (nodes) ->
         ###

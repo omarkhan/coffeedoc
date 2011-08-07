@@ -26,7 +26,7 @@ exports.documentModule = (script, parser) ->
     nodes = getNodes(script)
     first_obj = nodes[0]
     if first_obj?.type == 'Comment'
-        docstring = removeLeadingWhitespace(first_obj.comment)
+        docstring = formatDocstring(first_obj.comment)
     else
         docstring = null
 
@@ -63,7 +63,7 @@ documentClass = (cls) ->
     else
         cls.body.expressions[0].base?.objects[0]
     if first_obj?.type == 'Comment'
-        docstring = removeLeadingWhitespace(first_obj.comment)
+        docstring = formatDocstring(first_obj.comment)
     else
         docstring = null
 
@@ -101,7 +101,7 @@ documentFunction = (func) ->
     # Get docstring
     first_obj = func.value.body.expressions[0]
     if first_obj?.comment
-        docstring = removeLeadingWhitespace(first_obj.comment)
+        docstring = formatDocstring(first_obj.comment)
     else
         docstring = null
 
@@ -117,12 +117,13 @@ documentFunction = (func) ->
         docstring: docstring
         params: params
 
-removeLeadingWhitespace = (str) ->
+formatDocstring = (str) ->
     ###
     Given a string, returns it with leading whitespace removed but with
-    indentation preserved
+    indentation preserved. Replaces `\\#` with `#` to allow for the use of
+    multiple `#` characters in markup languages (e.g. Markdown headers)
     ###
-    lines = str.split('\n')
+    lines = str.replace(/\\#/g, '#').split('\n')
 
     # Remove leading blank lines
     while /^ *$/.test(lines[0])

@@ -58,6 +58,19 @@ CoffeeDoc can be run from the command line:
 
 Generated documentation is saved to the `docs/` folder under the current directory. If you wish to document several modules, make sure you generate all the docs with a single command -- this ensures that they will all appear in the `index.html` file.
 
+#### Note on Markdown headers ####
+
+Markdown uses `#` characters for headers, e.g.
+
+    # Header 1
+    ## Header 2
+    ### Header 3
+    #### Header 4
+    ##### Header 5
+    ###### Header 6
+
+As using a sequence of 3 or more `#` characters within a CoffeeScript block comment would end the comment block, CoffeeDoc allows for the `\#` escape sequence in docstrings. So instead of `### Header`, use `\#\#\# Header` or `##\# Header`. Ugly, but it works.
+
 ### How it works ###
 
 CoffeeDoc uses the CoffeeScript parser to generate a parse tree for the given source files. It then extracts the relevant information from the parse tree: class and function names, class member functions, function argument lists and docstrings.

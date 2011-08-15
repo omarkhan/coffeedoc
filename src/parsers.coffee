@@ -10,8 +10,10 @@ option.
 ###
 
 coffeescript = require('coffee-script')
+helpers = require(__dirname + '/helpers')
 
-getFullName = require(__dirname + '/helpers').getFullName
+getFullName = helpers.getFullName
+getAttr = helpers.getAttr
 
 class BaseParser
     ###
@@ -109,7 +111,7 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
         define [], () ->
             ... code ...
     ###
-    getNodes: (script) ->
+    getNodes: (script, debug=false) ->
         root_node = coffeescript.nodes(script)
         nodes = []
         moduleLdrs = ['define', 'require']
@@ -122,18 +124,33 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
                         arg.body.traverseChildren false, (node) ->
                             node.type = node.constructor.name
                             node.level = 2
+                            if debug
+                                console.log(node)
                         nodes = nodes.concat(arg.body.expressions)
                     # TODO: Support objects passed to require or define
-            #console.log(node)
+            if debug
+                console.log(node)
         return root_node.expressions.concat(nodes)
 
-    _parseDefine: (node, deps) ->
-        # TODO: Support define([..mods..], (..args..) ->)
+    _parseCall: (node, deps) ->
+        ### Parse require([], ->) and define([], ->) ###
+        mods = []
+        args = []
 
-    _parseRequire: (node, deps) ->
-        # TODO: Support require([..mods..], (..args..) ->)
+        for arg in node.args
+            val1 = getAttr(arg, 'base')
+            val2 = getAttr(arg, 'base.body.expressions[0]')
+            if val1.type is 'Arr'
+                mods = @_parseModuleArray(val1)
+            else if val2.type is 'Code'
+                args = @_parseFuncArgs(val2)
+            else if arg.type is 'Code'
+                args = @_parseFuncArgs(arg)
+
+        @_matchArgs(deps, mods, args)
 
     _parseAssign: (node, deps) ->
+        ### Parse module = require("path/to/module") ###
         arg = node.value.args[0]
         module_path = @_getModulePath(arg)
         if module_path?
@@ -141,21 +158,29 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
             deps[local_name] = module_path
 
     _parseObject: (node, deps) ->
+        ### Parse require = {} ###
         obj = node.value.base
         mods = []
         args = []
         for attr in obj.properties
-            if attr.variable.base.value is 'deps' and attr.value.base.type is 'Arr'
-                for mod in attr.value.base.objects
-                    mod_path = @_getModulePath(mod)
-                    if mod_path?
-                        mods.push(mod_path)
-            else if (attr.variable.base.value is 'callback' \
-                     and attr.value.base.body.expressions[0].type is 'Code')
-                func = attr.value.base.body.expressions[0]
-                for arg in func.params
-                    args.push(arg.name.value)
+            name = getAttr(attr, 'variable.base.value')
+            val1 = getAttr(attr, 'value.base')
+            val2 = getAttr(attr, 'value.base.body.expressions[0]')
+            if name is 'deps' and val1.type is 'Arr'
+                mods = @_parseModuleArray(val1)
+            else if name is 'callback'
+                if val2.type is 'Code'
+                    args = @_parseFuncArgs(val2)
+                else if attr.value.type is 'Code'
+                    args = @_parseFuncArgs(attr.value)
 
+        @_matchArgs(deps, mods, args)
+
+    _matchArgs: (deps, mods, args) ->
+        ###
+        Match the list of modules to the list of local variable names and
+        add them to the dependencies object given.
+        ###
         index = 0
         for mod in mods
             local_name = if index < args.length then args[index] else mod
@@ -164,6 +189,28 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
 
     _stripQuotes: (str) ->
         return str.replace(/('|\")/g, '')
+
+    _parseFuncArgs: (func) ->
+        ###
+        Given a node of type 'Code', gathers the names of each of the function
+        arguments and return them in an array.
+        ###
+        args = []
+        for arg in func.params
+            args.push(arg.name.value)
+        return args
+
+    _parseModuleArray: (arr) ->
+        ###
+        Given a node of type 'Arr', gathers the module paths represented by
+        each object in the array and returns them in an array.
+        ###
+        modules = []
+        for module in arr.objects
+            mod_path = @_getModulePath(module)
+            if mod_path?
+                modules.push(mod_path)
+        return modules
 
     _getModulePath: (mod) ->
         if mod.type is 'Value'
@@ -179,20 +226,23 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
             local_name = require("path/to/module")
             local_name = require(__dirname + "/path/to/module")
 
-        And the following `require` object assignments:
+        The following `require` object assignments:
 
             require = {deps: ["path/to/module"]}
             require = {deps: ["path/to/module"], callback: (module) ->}
 
-        NOTE: require([], ->) and define([], ->) are not yet implemented
+        And the following `require and `define` calls:
+
+            require(["path/to/module"], (module) -> ...)
+            require({}, ["path/to/module"], (module) -> ...)
+            define(["path/to/module"], (module) -> ...)
+            define('', ["path/to/module"], (module) -> ...)
+
         ###
         deps = {}
         for n in nodes
-            if n.type is 'Call'
-                if n.variable.base.value is 'define'
-                    @_parseDefine(n, deps)
-                else if n.variable.base.value is 'require'
-                    @_parseRequire(n, deps)
+            if n.type is 'Call' and n.variable.base.value in ['define', 'require']
+                @_parseCall(n, deps)
             else if n.type is 'Assign'
                 if n.value.type is 'Call' and n.value.variable.base.value is 'require'
                     @_parseAssign(n, deps)

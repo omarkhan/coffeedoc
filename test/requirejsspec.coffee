@@ -337,18 +337,112 @@ describe 'RequireJSParser', ->
     describe 'provides a getClasses method and', ->
 
         it 'handles top-level classes', ->
+            script = """
+                     class Test
+                         constructor: ->
+                         method1: ->
+                         method2: ->
+                     """
+            nodes = parser.getNodes(script)
+            classes = parser.getClasses(nodes)
+            expect(classes.length).toBe(1)
+            expect(classes[0].variable.base.value).toBe('Test')
+
         it 'handles classes inside of define', ->
+            script = """
+                     define ['mod'], (arg) ->
+                         class Test
+                             constructor: ->
+                             method1: ->
+                             method2: ->
+                     """
+            nodes = parser.getNodes(script)
+            classes = parser.getClasses(nodes)
+            expect(classes.length).toBe(1)
+            expect(classes[0].variable.base.value).toBe('Test')
+
         it 'handles classes inside of require', ->
+            script = """
+                     require ['mod'], (arg) ->
+                         class Test
+                             constructor: ->
+                             method1: ->
+                             method2: ->
+                     """
+            nodes = parser.getNodes(script)
+            classes = parser.getClasses(nodes)
+            expect(classes.length).toBe(1)
+            expect(classes[0].variable.base.value).toBe('Test')
 
     describe 'provides a getObjects method and', ->
 
         it 'handles top-level objects', ->
+            script = """
+                     test1 =
+                         val: true
+
+                     test2 = {val: false}
+                     """
+            nodes = parser.getNodes(script)
+            objs = parser.getObjects(nodes)
+            expect(objs.length).toBe(2)
+            expect(objs[0].variable.base.value).toBe('test1')
+            expect(objs[1].variable.base.value).toBe('test2')
+
         it 'handles objects inside of define', ->
+            script = """
+                     define ['mod'], (arg) ->
+                         test1 =
+                             val: true
+
+                         test2 = {val: false}
+                     """
+            nodes = parser.getNodes(script)
+            objs = parser.getObjects(nodes)
+            expect(objs.length).toBe(2)
+            expect(objs[0].variable.base.value).toBe('test1')
+            expect(objs[1].variable.base.value).toBe('test2')
+
         it 'handles objects inside of require', ->
+            script = """
+                     require ['mod'], (arg) ->
+                         test1 =
+                             val: true
+
+                         test2 = {val: false}
+                     """
+            nodes = parser.getNodes(script)
+            objs = parser.getObjects(nodes)
+            expect(objs.length).toBe(2)
+            expect(objs[0].variable.base.value).toBe('test1')
+            expect(objs[1].variable.base.value).toBe('test2')
 
     describe 'provides a getFunctions method and', ->
 
         it 'handles top-level functions', ->
+            script = "test = ->"
+            nodes = parser.getNodes(script)
+            funcs = parser.getFunctions(nodes)
+            expect(funcs.length).toBe(1)
+            expect(funcs[0].variable.base.value).toBe('test')
+
         it 'handles functions inside of define', ->
+            script = """
+                     define ['mod'], (arg) ->
+                         test = ->
+                     """
+            nodes = parser.getNodes(script)
+            funcs = parser.getFunctions(nodes)
+            expect(funcs.length).toBe(1)
+            expect(funcs[0].variable.base.value).toBe('test')
+
         it 'handles functions inside of require', ->
+            script = """
+                     require ['mod'], (arg) ->
+                         test = ->
+                     """
+            nodes = parser.getNodes(script)
+            funcs = parser.getFunctions(nodes)
+            expect(funcs.length).toBe(1)
+            expect(funcs[0].variable.base.value).toBe('test')
 

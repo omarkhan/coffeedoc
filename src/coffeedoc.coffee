@@ -108,7 +108,11 @@ documentFunction = (func) ->
     # Get params
     if func.value.params
         params = for p in func.value.params
-            if p.splat then p.name.value + '...' else p.name.value
+            if p.name.base?.value == 'this'
+                '@' + p.name.properties[0].name.value
+            else
+                if p.splat then p.name.value + '...' else p.name.value
+
     else
         params = []
 

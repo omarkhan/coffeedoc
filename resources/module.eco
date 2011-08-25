@@ -54,12 +54,24 @@
           <div class="class_content">
             <% if cls.docstring: %><%- cls.docstring %><% end %>
             <div class="methods">
-              <% for method in cls.methods: %>
-              <div class="method">
-                <h4><%= method.name %>(<%= method.params.join(', ') %>)</h4>
-                <% if method.docstring: %><%- method.docstring %><% end %>
+              <div class="staticmethods">
+                <h3>Static Methods</h3>
+                <% for method in cls.staticmethods: %>
+                <div class="method">
+                  <h4><%= method.name %>(<%= method.params.join(', ') %>)</h4>
+                  <% if method.docstring: %><%- method.docstring %><% end %>
+                </div>
+                <% end %>
               </div>
-              <% end %>
+              <div class="instancemethods">
+                <h3>Instance Methods</h3>
+                <% for method in cls.instancemethods: %>
+                <div class="method">
+                  <h4><%= method.name %>(<%= method.params.join(', ') %>)</h4>
+                  <% if method.docstring: %><%- method.docstring %><% end %>
+                </div>
+                <% end %>
+              </div>
             </div>
           </div>
         </div>

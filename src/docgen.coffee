@@ -82,7 +82,8 @@ if sources.length > 0
             renderMarkdown(documentation.module)
             for c in documentation.module.classes
                 renderMarkdown(c)
-                renderMarkdown(m) for m in c.methods
+                renderMarkdown(m) for m in c.staticmethods
+                renderMarkdown(m) for m in c.instancemethods
             renderMarkdown(f) for f in documentation.module.functions
 
             # Generate docs

@@ -55,7 +55,7 @@ documentClass = (cls) ->
         cls = cls.value
 
     # Check if class is empty
-    emptyclass = not cls.body.expressions[0]?.base?
+    emptyclass = cls.body.expressions.length == 0
 
     # Get docstring
     first_obj = if emptyclass
@@ -68,11 +68,18 @@ documentClass = (cls) ->
         docstring = null
 
     # Get methods
-    methods = if emptyclass
-        []
-    else
-        (n for n in cls.body.expressions[0].base.objects \
-         when n.type == 'Assign' and n.value.type == 'Code')
+    staticmethods = []
+    instancemethods = []
+    for expr in cls.body.expressions
+        if expr.type == 'Value'
+            # Instance methods
+            for method in (n for n in expr.base.objects \
+                           when n.type == 'Assign' and n.value.type == 'Code')
+                instancemethods.push(method)
+        else if expr.type == 'Assign' and expr.value.type == 'Code'
+            # Static method
+            if expr.variable.this # Only include public methods
+                staticmethods.push(expr)
 
     if cls.parent?
         parent = getFullName(cls.parent)
@@ -83,7 +90,11 @@ documentClass = (cls) ->
         name: getFullName(cls.variable)
         docstring: docstring
         parent: parent
-        methods: (documentFunction(m) for m in methods)
+        staticmethods: (documentFunction(m) for m in staticmethods)
+        instancemethods: (documentFunction(m) for m in instancemethods)
+
+    for method in doc.staticmethods
+        method.name = method.name.replace(/^this/, doc.name)
 
     return doc
 

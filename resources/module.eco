@@ -54,6 +54,7 @@
           <div class="class_content">
             <% if cls.docstring: %><%- cls.docstring %><% end %>
             <div class="methods">
+              <% if cls.staticmethods.length > 0: %>
               <div class="staticmethods">
                 <h3>Static Methods</h3>
                 <% for method in cls.staticmethods: %>
@@ -63,6 +64,8 @@
                 </div>
                 <% end %>
               </div>
+              <% end %>
+              <% if cls.instancemethods.length > 0: %>
               <div class="instancemethods">
                 <h3>Instance Methods</h3>
                 <% for method in cls.instancemethods: %>
@@ -72,6 +75,7 @@
                 </div>
                 <% end %>
               </div>
+              <% end %>
             </div>
           </div>
         </div>

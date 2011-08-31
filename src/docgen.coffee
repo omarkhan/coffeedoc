@@ -35,19 +35,23 @@ OPTIONS =
 
 opts = process.argv[2...process.argv.length]
 if opts.length == 0
-    console.log('Usage: coffeedoc [options] targets\n')
-    console.log('Options:')
-    for flag, description of OPTIONS
-        console.log('    ' + flag + ': ' + description)
-    process.exit()
-if opts[0] == '--requirejs'
-    opts.shift()
-    parser = new parsers.RequireJSParser()
-else if opts[0] == '--commonjs'
-    opts.shift()
+    opts = ['.']
     parser = new parsers.CommonJSParser()
 else
-    parser = new parsers.CommonJSParser()
+    if opts[0] == '--help'
+        console.log('Usage: coffeedoc [options] targets\n')
+        console.log('Options:')
+        for flag, description of OPTIONS
+            console.log('    ' + flag + ': ' + description)
+        process.exit()
+    if opts[0] == '--requirejs'
+        opts.shift()
+        parser = new parsers.RequireJSParser()
+    else if opts[0] == '--commonjs'
+        opts.shift()
+        parser = new parsers.CommonJSParser()
+    else
+        parser = new parsers.CommonJSParser()
 
 # Get source file paths
 sources = []

@@ -15,7 +15,7 @@
     <div id="sidebar">
       <ul id="modulelist">
         <% for m in @modules: %>
-        <li><a href="<%= m.filename %>"><%= m.module_name %></a></li>
+        <li><a href="<%= m.filename %>.html"><%= m.filename %>.coffee</a></li>
         <% end %>
       </ul>
     </div>
@@ -24,7 +24,7 @@
       <% for m in @modules: %>
       <div class="module">
         <div class="header">
-          <a href="<%= m.filename %>"><h3><%= m.module_name %></h3></a>
+          <a href="<%= m.filename %>.html"><h3><%= m.module_name %></h3></a>
         </div>
         <div class="module_content">
           <% if m.module.docstring: %><%- m.module.docstring %><% end %>
@@ -32,7 +32,7 @@
           <h4>Classes</h4>
           <ul class="classlist">
             <% for cls in m.module.classes: %>
-            <li><a href="<%= m.filename %>#<%= cls.name %>"><%= cls.name %></a></li>
+            <li><a href="<%= m.filename %>.html#<%= cls.name %>"><%= cls.name %></a></li>
             <% end %>
           </ul>
           <% end %>
@@ -40,7 +40,7 @@
           <h4>Functions</h4>
           <ul class="functionlist">
             <% for func in m.module.functions: %>
-            <li><a href="<%= m.filename %>#<%= func.name %>"><%= func.name %>(<%= func.params.join(', ') %>)</a></li>
+            <li><a href="<%= m.filename %>.html#<%= func.name %>"><%= func.name %>(<%= func.params.join(', ') %>)</a></li>
             <% end %>
           </ul>
           <% end %>

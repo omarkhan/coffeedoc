@@ -91,7 +91,7 @@ if sources.length > 0
 
         # Fetch documentation information
         documentation =
-            filename: source_names[idx] + '.html'
+            filename: source_names[idx]
             module_name: path.basename(source)
             module: coffeedoc.documentModule(script, parser)
             csspath: csspath
@@ -119,7 +119,7 @@ if sources.length > 0
         html = eco.render(module_template, documentation)
 
         # Write to file
-        fs.writeFile(path.join('docs', documentation.filename), html)
+        fs.writeFile(path.join('docs', documentation.filename + '.html'), html)
 
         # Save to modules array for the index page
         modules.push(documentation)

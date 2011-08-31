@@ -9,6 +9,8 @@ the CoffeeScript AST. Each parser class is specific to a module loading system
 option.
 ###
 
+helpers = require(__dirname + '/helpers')
+
 class BaseParser
     ###
     This base class defines the interface for parsers. Subclasses should
@@ -23,7 +25,7 @@ class BaseParser
                 "local.name": "path/to/module"
             }
         ###
-        return []
+        return {}
     
     getClasses: (nodes) ->
         ###
@@ -46,7 +48,7 @@ exports.CommonJSParser = class CommonJSParser extends BaseParser
         require("module")
         exports.func = ->
     ###
-    getDependencies = (nodes) ->
+    getDependencies: (nodes) ->
         ###
         This currently works with the following `require` calls:
 
@@ -55,8 +57,6 @@ exports.CommonJSParser = class CommonJSParser extends BaseParser
         or
 
             local_name = require(__dirname + "/path/to/module")
-
-        In the second example, `__dirname` is replaced with a `.` in the output.
         ###
         stripQuotes = (str) ->
             return str.replace(/('|\")/g, '')
@@ -68,10 +68,10 @@ exports.CommonJSParser = class CommonJSParser extends BaseParser
                 if arg.type == 'Value'
                     module_path = stripQuotes(arg.base.value)
                 else if arg.type == 'Op' and arg.operator == '+'
-                    module_path = '.' + stripQuotes(arg.second.base.value)
+                    module_path = stripQuotes(arg.second.base.value).replace(/^\//, '')
                 else
                     continue
-                local_name = getFullName(n.variable)
+                local_name = helpers.getFullName(n.variable)
                 deps[local_name] = module_path
         return deps
 

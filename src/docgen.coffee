@@ -48,60 +48,89 @@ else if opts[0] == '--commonjs'
     parser = new parsers.CommonJSParser()
 else
     parser = new parsers.CommonJSParser()
-sources = opts
 
-# Iterate over source scripts
+# Get source file paths
+sources = []
+getSourceFiles = (target) ->
+    if path.extname(target) == '.coffee'
+        sources.push(target)
+    else if fs.statSync(target).isDirectory()
+        getSourceFiles(path.join(target, p)) for p in fs.readdirSync(target)
+getSourceFiles(o) for o in opts
+
 if sources.length > 0
     modules = []
-    source_names = (path.basename(s, path.extname(s)) for s in sources)
     
-    # Make docs/ directory under current dir
-    fs.mkdir 'docs', '755', ->
-        for source, idx in sources
-            script = fs.readFileSync(source, 'utf-8')
+    # Make `docs/` directory under current dir
+    if path.existsSync('docs')
+        # Recursively delete `docs/` if it already exists
+        rm = (target) ->
+            if fs.statSync(target).isDirectory()
+                rm(path.join(target, p)) for p in fs.readdirSync(target)
+                fs.rmdirSync(target)
+            else
+                fs.unlinkSync(target)
+        rm('docs')
+    fs.mkdirSync('docs', '755')
 
-            # Fetch documentation information
-            documentation =
-                filename: source_names[idx] + '.html'
-                module_name: path.basename(source)
-                module: coffeedoc.documentModule(script, parser)
+    # Iterate over source scripts
+    source_names = (s.replace(/\.coffee$/, '') for s in sources)
+    for source, idx in sources
+        script = fs.readFileSync(source, 'utf-8')
 
-            # Check for classes inheriting from classes in other modules
-            for cls in documentation.module.classes when cls.parent
-                clspath = cls.parent.split('.')
-                if clspath.length > 1
-                    prefix = clspath.shift()
-                    if prefix of documentation.module.deps
-                        module_path = documentation.module.deps[prefix]
-                        module_filename = path.basename(module_path, path.extname(module_path))
-                        if module_filename in source_names
-                            cls.parent_module = module_filename
-                            cls.parent_name = clspath.join('.')
+        # If source is in a subfolder, make a matching subfolder in `docs/`
+        csspath = 'resources/'
+        if source.indexOf('/') != -1
+            docpath = 'docs'
+            sourcepath = source.split('/')
+            for dir in sourcepath[0...sourcepath.length - 1]
+                csspath = '../' + csspath
+                docpath = path.join(docpath, dir)
+                if not path.existsSync(docpath)
+                    fs.mkdirSync(docpath, '755')
 
-            # Convert markdown to html
-            renderMarkdown(documentation.module)
-            for c in documentation.module.classes
-                renderMarkdown(c)
-                renderMarkdown(m) for m in c.staticmethods
-                renderMarkdown(m) for m in c.instancemethods
-            renderMarkdown(f) for f in documentation.module.functions
+        # Fetch documentation information
+        documentation =
+            filename: source_names[idx] + '.html'
+            module_name: path.basename(source)
+            module: coffeedoc.documentModule(script, parser)
+            csspath: csspath
 
-            # Generate docs
-            html = eco.render(module_template, documentation)
+        # Check for classes inheriting from classes in other modules
+        for cls in documentation.module.classes when cls.parent
+            clspath = cls.parent.split('.')
+            if clspath.length > 1
+                prefix = clspath.shift()
+                if prefix of documentation.module.deps
+                    module_path = documentation.module.deps[prefix]
+                    if module_path in source_names
+                        cls.parent_module = module_path
+                        cls.parent_name = clspath.join('.')
 
-            # Write to file
-            fs.writeFile('docs/' + documentation.filename, html)
+        # Convert markdown to html
+        renderMarkdown(documentation.module)
+        for c in documentation.module.classes
+            renderMarkdown(c)
+            renderMarkdown(m) for m in c.staticmethods
+            renderMarkdown(m) for m in c.instancemethods
+        renderMarkdown(f) for f in documentation.module.functions
 
-            # Save to modules array for the index page
-            modules.push(documentation)
+        # Generate docs
+        html = eco.render(module_template, documentation)
 
-        # Write css stylesheets to docs/resources/
-        fs.mkdir 'docs/resources', '755', ->
-            fs.writeFile('docs/resources/base.css', base_css)
-            fs.writeFile('docs/resources/module.css', module_css)
-            fs.writeFile('docs/resources/index.css', index_css)
+        # Write to file
+        fs.writeFile(path.join('docs', documentation.filename), html)
 
-        # Make index page
-        index = eco.render(index_template, modules: modules)
-        fs.writeFile('docs/index.html', index)
+        # Save to modules array for the index page
+        modules.push(documentation)
+
+    # Write css stylesheets to docs/resources/
+    fs.mkdir 'docs/resources', '755', ->
+        fs.writeFile('docs/resources/base.css', base_css)
+        fs.writeFile('docs/resources/module.css', module_css)
+        fs.writeFile('docs/resources/index.css', index_css)
+
+    # Make index page
+    index = eco.render(index_template, modules: modules)
+    fs.writeFile('docs/index.html', index)
 

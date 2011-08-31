@@ -30,28 +30,33 @@ index_css = fs.readFileSync(__dirname + '/../resources/index.css', 'utf-8')
 
 # Command line options
 OPTIONS =
-    '--commonjs': ' Use if target scripts use CommonJS for module loading (default)'
-    '--requirejs': 'Use if target scripts use RequireJS for module loading'
+    '-o, --output': 'Set output directory (default: ./docs)'
+    '--commonjs  ': 'Use if target scripts use CommonJS for module loading (default)'
+    '--requirejs ': 'Use if target scripts use RequireJS for module loading'
 
+outputdir = 'docs'
 opts = process.argv[2...process.argv.length]
-if opts.length == 0
-    opts = ['.']
+for o, idx in opts
+    if o == '-o' or o == '--output'
+        outputdir = opts[idx + 1]
+        opts.splice(idx, 2)
+        break
+if '-h' in opts or '--help' in opts
+    console.log('Usage: coffeedoc [options] [targets]\n')
+    console.log('Options:')
+    for flag, description of OPTIONS
+        console.log('    ' + flag + ': ' + description)
+    process.exit()
+if '--requirejs' in opts
+    opts.shift()
+    parser = new parsers.RequireJSParser()
+else if '--commonjs' in opts
+    opts.shift()
     parser = new parsers.CommonJSParser()
 else
-    if opts[0] == '--help'
-        console.log('Usage: coffeedoc [options] targets\n')
-        console.log('Options:')
-        for flag, description of OPTIONS
-            console.log('    ' + flag + ': ' + description)
-        process.exit()
-    if opts[0] == '--requirejs'
-        opts.shift()
-        parser = new parsers.RequireJSParser()
-    else if opts[0] == '--commonjs'
-        opts.shift()
-        parser = new parsers.CommonJSParser()
-    else
-        parser = new parsers.CommonJSParser()
+    parser = new parsers.CommonJSParser()
+if opts.length == 0
+    opts = ['.']
 
 # Get source file paths
 sources = []
@@ -65,27 +70,27 @@ getSourceFiles(o) for o in opts
 if sources.length > 0
     modules = []
     
-    # Make `docs/` directory under current dir
-    if path.existsSync('docs')
-        # Recursively delete `docs/` if it already exists
+    # Make output directory
+    if path.existsSync(outputdir)
+        # Recursively delete outputdir if it already exists
         rm = (target) ->
             if fs.statSync(target).isDirectory()
                 rm(path.join(target, p)) for p in fs.readdirSync(target)
                 fs.rmdirSync(target)
             else
                 fs.unlinkSync(target)
-        rm('docs')
-    fs.mkdirSync('docs', '755')
+        rm(outputdir)
+    fs.mkdirSync(outputdir, '755')
 
     # Iterate over source scripts
     source_names = (s.replace(/\.coffee$/, '') for s in sources)
     for source, idx in sources
         script = fs.readFileSync(source, 'utf-8')
 
-        # If source is in a subfolder, make a matching subfolder in `docs/`
+        # If source is in a subfolder, make a matching subfolder in outputdir
         csspath = 'resources/'
         if source.indexOf('/') != -1
-            docpath = 'docs'
+            docpath = outputdir
             sourcepath = source.split('/')
             for dir in sourcepath[0...sourcepath.length - 1]
                 csspath = '../' + csspath
@@ -123,18 +128,19 @@ if sources.length > 0
         html = eco.render(module_template, documentation)
 
         # Write to file
-        fs.writeFile(path.join('docs', documentation.filename + '.html'), html)
+        fs.writeFile(path.join(outputdir, documentation.filename + '.html'), html)
 
         # Save to modules array for the index page
         modules.push(documentation)
 
-    # Write css stylesheets to docs/resources/
-    fs.mkdir 'docs/resources', '755', ->
-        fs.writeFile('docs/resources/base.css', base_css)
-        fs.writeFile('docs/resources/module.css', module_css)
-        fs.writeFile('docs/resources/index.css', index_css)
+    # Write css stylesheets to `resources/`
+    resourcesdir = path.join(outputdir, 'resources')
+    fs.mkdir resourcesdir, '755', ->
+        fs.writeFile(path.join(resourcesdir, 'base.css'), base_css)
+        fs.writeFile(path.join(resourcesdir, 'module.css'), module_css)
+        fs.writeFile(path.join(resourcesdir, 'index.css'), index_css)
 
     # Make index page
     index = eco.render(index_template, modules: modules)
-    fs.writeFile('docs/index.html', index)
+    fs.writeFile(path.join(outputdir, 'index.html'), index)
 

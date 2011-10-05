@@ -63,7 +63,7 @@ exports.CommonJSParser = class CommonJSParser extends BaseParser
 
         deps = {}
         for n in nodes when n.type == 'Assign'
-            if n.value.type == 'Call' and n.value.variable.base.value == 'require'
+            if n.value.type == 'Call' and n.value.variable.base? and n.value.variable.base.value == 'require'
                 arg = n.value.args[0]
                 if arg.type == 'Value'
                     module_path = stripQuotes(arg.base.value)

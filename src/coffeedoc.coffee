@@ -61,7 +61,7 @@ documentClass = (cls) ->
     first_obj = if emptyclass
         cls.body.expressions[0]
     else
-        cls.body.expressions[0].base?.objects[0]
+        cls.body.expressions[0].base?.objects?[0]
     if first_obj?.type == 'Comment'
         docstring = formatDocstring(first_obj.comment)
     else

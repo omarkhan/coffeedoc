@@ -112,7 +112,7 @@ if sources.length > 0
                 prefix = clspath.shift()
                 if prefix of documentation.module.deps
                     module_path = documentation.module.deps[prefix]
-                    if module_path in source_names
+                    if path.dirname(source) + '/' + module_path in source_names
                         cls.parent_module = module_path
                         cls.parent_name = clspath.join('.')
 

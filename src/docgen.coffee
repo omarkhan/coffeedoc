@@ -5,6 +5,7 @@ Documentation generator
 This script generates html documentation from a coffeescript source file
 ###
 
+# Imports
 fs = require('fs')
 path = require('path')
 eco = require('eco')
@@ -12,21 +13,6 @@ showdown = require(__dirname + '/../vendor/showdown').Showdown
 coffeedoc = require(__dirname + '/coffeedoc')
 parsers = require(__dirname + '/parsers')
 
-renderMarkdown = (obj) ->
-    ###
-    Helper function that transforms markdown docstring within an AST node
-    into html, in place
-    ###
-    if obj.docstring
-        obj.docstring = showdown.makeHtml(obj.docstring)
-    return null
-
-# Fetch resources
-module_template = fs.readFileSync(__dirname + '/../resources/module.eco', 'utf-8')
-index_template = fs.readFileSync(__dirname + '/../resources/index.eco', 'utf-8')
-base_css = fs.readFileSync(__dirname + '/../resources/base.css', 'utf-8')
-module_css = fs.readFileSync(__dirname + '/../resources/module.css', 'utf-8')
-index_css = fs.readFileSync(__dirname + '/../resources/index.css', 'utf-8')
 
 # Command line options
 OPTIONS =
@@ -34,19 +20,25 @@ OPTIONS =
     '--commonjs  ': 'Use if target scripts use CommonJS for module loading (default)'
     '--requirejs ': 'Use if target scripts use RequireJS for module loading'
 
-outputdir = 'docs'
+help = ->
+    ### Show help message and exit ###
+    console.log('Usage: coffeedoc [options] [targets]\n')
+    console.log('Options:')
+    for flag, description of OPTIONS
+        console.log('    ' + flag + ': ' + description)
+    process.exit()
+
 opts = process.argv[2...process.argv.length]
+if opts.length == 0 then help()
+
+outputdir = 'docs'
 for o, idx in opts
     if o == '-o' or o == '--output'
         outputdir = opts[idx + 1]
         opts.splice(idx, 2)
         break
 if '-h' in opts or '--help' in opts
-    console.log('Usage: coffeedoc [options] [targets]\n')
-    console.log('Options:')
-    for flag, description of OPTIONS
-        console.log('    ' + flag + ': ' + description)
-    process.exit()
+    help()
 if '--requirejs' in opts
     opts.shift()
     parser = new parsers.RequireJSParser()
@@ -58,6 +50,25 @@ else
 if opts.length == 0
     opts = ['.']
 
+
+renderMarkdown = (obj) ->
+    ###
+    Helper function that transforms markdown docstring within an AST node
+    into html, in place
+    ###
+    if obj.docstring
+        obj.docstring = showdown.makeHtml(obj.docstring)
+    return null
+
+
+# Fetch resources
+module_template = fs.readFileSync(__dirname + '/../resources/module.eco', 'utf-8')
+index_template = fs.readFileSync(__dirname + '/../resources/index.eco', 'utf-8')
+base_css = fs.readFileSync(__dirname + '/../resources/base.css', 'utf-8')
+module_css = fs.readFileSync(__dirname + '/../resources/module.css', 'utf-8')
+index_css = fs.readFileSync(__dirname + '/../resources/index.css', 'utf-8')
+
+
 # Get source file paths
 sources = []
 getSourceFiles = (target) ->
@@ -66,6 +77,7 @@ getSourceFiles = (target) ->
     else if fs.statSync(target).isDirectory()
         getSourceFiles(path.join(target, p)) for p in fs.readdirSync(target)
 getSourceFiles(o) for o in opts
+
 
 if sources.length > 0
     modules = []

@@ -42,7 +42,7 @@
         <% for cls in @module.classes: %>
         <div class="class">
           <div class="header">
-            <a id="<%= cls.name %>"><h3><%= cls.name %></h3></a>
+            <a id="<%= cls.name.replace /^exports\./, '' %>"><h3><%= cls.name %></h3></a>
             <% if cls.parent: %>
             <% if cls.parent_module?: %>
             <a class="parent" href="<%= cls.parent_module %>.html#<%= cls.parent_name %>"><h3>extends <%= cls.parent %></h3></a>

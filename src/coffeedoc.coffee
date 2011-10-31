@@ -72,10 +72,14 @@ documentClass = (cls) ->
     instancemethods = []
     for expr in cls.body.expressions
         if expr.type == 'Value'
-            # Instance methods
             for method in (n for n in expr.base.objects \
                            when n.type == 'Assign' and n.value.type == 'Code')
-                instancemethods.push(method)
+                if method.variable.this
+                    # Method attached to `this`, i.e. the constructor
+                    staticmethods.push(method)
+                else
+                    # Method attached to prototype
+                    instancemethods.push(method)
         else if expr.type == 'Assign' and expr.value.type == 'Code'
             # Static method
             if expr.variable.this # Only include public methods

@@ -31,6 +31,9 @@ class Subclass extends MyClass
     @static = (args) ->
         ### This is a static method ###
 
+    @static2: (args) ->
+        ### This is another static method ###
+
     myMethod: (arg) =>
         return arg + 1
 

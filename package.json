@@ -22,10 +22,6 @@
     "coffee-script": ">=1.1.1",
     "eco": ">=1.1.0-rc-1"
   },
-  "directories": {
-    "lib": "./lib"
-  },
-  "main": "./lib/coffeedoc",
   "bin": {
     "coffeedoc": "./bin/coffeedoc"
   },

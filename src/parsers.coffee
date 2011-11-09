@@ -115,8 +115,8 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
       args = []
 
       for arg in node.args
-          val1 = getAttr(arg, 'base')
-          val2 = getAttr(arg, 'base.body.expressions[0]')
+          val1 = helpers.getAttr(arg, 'base')
+          val2 = helpers.getAttr(arg, 'base.body.expressions[0]')
           if val1.type is 'Arr'
               mods = @_parseModuleArray(val1)
           else if val2.type is 'Code'

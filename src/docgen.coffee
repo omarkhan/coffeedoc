@@ -18,7 +18,7 @@ parsers = require(__dirname + '/parsers')
 OPTIONS =
     '-o, --output': 'Set output directory (default: ./docs)'
     '--commonjs  ': 'Use if target scripts use CommonJS for module loading (default)'
-#    '--requirejs ': 'Use if target scripts use RequireJS for module loading'
+    '--requirejs ': 'Use if target scripts use RequireJS for module loading'
 
 help = ->
     ### Show help message and exit ###
@@ -42,9 +42,9 @@ if '-h' in opts or '--help' in opts
 if '--commonjs' in opts
     opts.shift()
     parser = new parsers.CommonJSParser()
-#else if '--requirejs' in opts
-#    opts.shift()
-#    parser = new parsers.RequireJSParser()
+else if '--requirejs' in opts
+   opts.shift()
+   parser = new parsers.RequireJSParser()
 else
     parser = new parsers.CommonJSParser()
 if opts.length == 0

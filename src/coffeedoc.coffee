@@ -24,6 +24,7 @@ exports.documentModule = (script, parser) ->
     AST parsers are defined in the `parsers.coffee` module
     ###
     nodes = getNodes(script)
+    nodes = parser.getNodes(nodes) if parser.getNodes
     first_obj = nodes[0]
     if first_obj?.type == 'Comment'
         docstring = formatDocstring(first_obj.comment)

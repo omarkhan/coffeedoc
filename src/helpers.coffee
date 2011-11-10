@@ -16,7 +16,7 @@ exports.getNodes = (script) ->
     root_node = coffeescript.nodes(script)
     root_node.traverseChildren false, (node) ->
         node.type = node.constructor.name
-    return [root_node].concat(root_node.expressions)
+    return [].concat(root_node.expressions, root_node)
 
 exports.getFullName = (variable) ->
     ###

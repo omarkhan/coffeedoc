@@ -70,7 +70,7 @@ CoffeeDoc can be run from the command line:
     Options:
         -o, --output: Set output directory (default: ./docs)
         --commonjs  : Use if target scripts use CommonJS for module loading (default)
-        --requirejs : Use if target scripts use RequireJS for module loading (not yet implemented)
+        --requirejs : Use if target scripts use RequireJS for module loading
 
 If [targets] is a directory, CoffeeDoc will recursively document all `.coffee`
 files found under that directory.

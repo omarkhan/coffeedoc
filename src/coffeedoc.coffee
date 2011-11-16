@@ -146,17 +146,17 @@ formatDocstring = (str) ->
     lines = str.replace(/\\#/g, '#').split('\n')
 
     # Remove leading blank lines
-    while /^ *$/.test(lines[0])
+    while /^\s*$/.test(lines[0])
         lines.shift()
     if lines.length == 0
         return null
 
     # Get least indented non-blank line
     indentation = for line in lines
-        if /^ *$/.test(line) then continue
-        line.match(/^ */)[0].length
+        if /^\s*$/.test(line) then continue
+        line.match(/^\s*/)[0].length
     indentation = Math.min(indentation...)
 
-    leading_whitespace = new RegExp("^ {#{ indentation }}")
+    leading_whitespace = new RegExp("^\\s{#{ indentation }}")
     return (line.replace(leading_whitespace, '') for line in lines).join('\n')
 

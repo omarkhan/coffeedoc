@@ -62,3 +62,11 @@ myFunc2 = (arg, splat...) ->
     ### Another function, with a splat argument ###
     return splat[0] if splat.length > 0
     return null
+
+tabFunc = (args) ->
+    ###
+	This docstring uses tabs for indentation
+	
+		Code block here...
+    ###
+    return null

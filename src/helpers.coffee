@@ -5,7 +5,10 @@ AST helper functions
 Useful functions for dealing with the CoffeeScript parse tree.
 ###
 
-coffeescript = require('coffee-script')
+try
+  coffeescript = require('iced-coffee-script')
+catch error
+  coffeescript = require('coffee-script')
 
 exports.getNodes = (script) ->
     ###

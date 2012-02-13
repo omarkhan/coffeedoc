@@ -64,9 +64,6 @@ renderMarkdown = (obj) ->
 # Fetch resources
 module_template = fs.readFileSync(__dirname + '/../resources/module.eco', 'utf-8')
 index_template = fs.readFileSync(__dirname + '/../resources/index.eco', 'utf-8')
-base_css = fs.readFileSync(__dirname + '/../resources/base.css', 'utf-8')
-module_css = fs.readFileSync(__dirname + '/../resources/module.css', 'utf-8')
-index_css = fs.readFileSync(__dirname + '/../resources/index.css', 'utf-8')
 
 
 # Get source file paths
@@ -78,10 +75,24 @@ getSourceFiles = (target) ->
         getSourceFiles(path.join(target, p)) for p in fs.readdirSync(target)
 getSourceFiles(o) for o in opts
 
+pathFixup = (path) ->
+    path.replace('/', ':')
+
+indenter = (text, spaces, hlevel, llevel) ->
+   ###
+   eco helper function which indents markdown properly and adjusts headers and lists accordingly.
+   ###
+   bits = text.split('\n')
+   newbits = []
+   for b in bits
+       newbits.push((spaces * ' ') + b)
+   newbits.join('\n')
 
 if sources.length > 0
     modules = []
     
+
+    # TODO don't make subdirectories for modules!
     # Make output directory
     if path.existsSync(outputdir)
         # Recursively delete outputdir if it already exists
@@ -100,12 +111,10 @@ if sources.length > 0
         script = fs.readFileSync(source, 'utf-8')
 
         # If source is in a subfolder, make a matching subfolder in outputdir
-        csspath = 'resources/'
         if source.indexOf('/') != -1
             docpath = outputdir
             sourcepath = source.split('/')
             for dir in sourcepath[0...sourcepath.length - 1]
-                csspath = '../' + csspath
                 docpath = path.join(docpath, dir)
                 if not path.existsSync(docpath)
                     fs.mkdirSync(docpath, '755')
@@ -115,7 +124,6 @@ if sources.length > 0
             filename: source_names[idx]
             module_name: path.basename(source)
             module: coffeedoc.documentModule(script, parser)
-            csspath: csspath
 
         # Check for classes inheriting from classes in other modules
         for cls in documentation.module.classes when cls.parent
@@ -128,31 +136,28 @@ if sources.length > 0
                         cls.parent_module = module_path
                         cls.parent_name = clspath.join('.')
 
+        # TODO: remove this, since we're not rendering markdown ever. 
         # Convert markdown to html
-        renderMarkdown(documentation.module)
-        for c in documentation.module.classes
-            renderMarkdown(c)
-            renderMarkdown(m) for m in c.staticmethods
-            renderMarkdown(m) for m in c.instancemethods
-        renderMarkdown(f) for f in documentation.module.functions
+        #renderMarkdown(documentation.module)
+        #for c in documentation.module.classes
+        #    renderMarkdown(c)
+        #    renderMarkdown(m) for m in c.staticmethods
+        #    renderMarkdown(m) for m in c.instancemethods
+        #renderMarkdown(f) for f in documentation.module.functions
+
+        documentation['indenter'] = indenter
 
         # Generate docs
-        html = eco.render(module_template, documentation)
-
+        md = eco.render(module_template, documentation)
+  
         # Write to file
-        fs.writeFile(path.join(outputdir, documentation.filename + '.html'), html)
+        fs.writeFile(path.join(outputdir, pathFixup(documentation.filename + '.md')), md)
 
         # Save to modules array for the index page
         modules.push(documentation)
 
-    # Write css stylesheets to `resources/`
-    resourcesdir = path.join(outputdir, 'resources')
-    fs.mkdir resourcesdir, '755', ->
-        fs.writeFile(path.join(resourcesdir, 'base.css'), base_css)
-        fs.writeFile(path.join(resourcesdir, 'module.css'), module_css)
-        fs.writeFile(path.join(resourcesdir, 'index.css'), index_css)
 
     # Make index page
     index = eco.render(index_template, modules: modules)
-    fs.writeFile(path.join(outputdir, 'index.html'), index)
+    fs.writeFile(path.join(outputdir, 'Home.md'), index)
 

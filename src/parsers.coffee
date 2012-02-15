@@ -59,7 +59,9 @@ exports.CommonJSParser = class CommonJSParser extends BaseParser
             local_name = require(__dirname + "/path/to/module")
         ###
         stripQuotes = (str) ->
-            return str.replace(/('|\")/g, '')
+            if str?
+              return str.replace(/('|\")/g, '')
+            str
 
         deps = {}
         for n in nodes when n.type == 'Assign'
@@ -68,7 +70,9 @@ exports.CommonJSParser = class CommonJSParser extends BaseParser
                 if arg.type == 'Value'
                     module_path = stripQuotes(arg.base.value)
                 else if arg.type == 'Op' and arg.operator == '+'
-                    module_path = stripQuotes(arg.second.base.value).replace(/^\//, '')
+                    module_path = stripQuotes(arg.second.base.value)
+                    if module_path?
+                      module_path = module_path.replace(/^\//, '')
                 else
                     continue
                 local_name = helpers.getFullName(n.variable)
@@ -165,7 +169,9 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
           index++
 
   _stripQuotes: (str) ->
-      return str.replace(/('|\")/g, '')
+      if str?
+        return str.replace(/('|\")/g, '')
+      str
 
   _parseFuncArgs: (func) ->
       ###

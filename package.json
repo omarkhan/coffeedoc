@@ -1,11 +1,13 @@
 {
-  "name": "coffeedoc",
-  "description": "An API documentation generator for CoffeeScript",
+  "name": "coffeedoc-hub",
+  "description": "An API documentation generator for CoffeeScript, for use on GitHub wiki",
   "keywords": [
     "documentation",
     "docs",
     "generator",
-    "coffeescript"
+    "coffeescript",
+    "github",
+    "wiki"
   ],
   "author": "Omar Khan",
   "version": "0.1.12",

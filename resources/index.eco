@@ -1,8 +1,8 @@
 # Module index
   <% for m in @modules: %>
-## <%= m.module_name %>
+## [<%= m.qualified_name %>](./<%= m.filename %>)
   <% end %>
-  <% if m.module.docstring: %><%- @indenter(m.module.docstring) %><% end %>
+  <% if m.module.docstring: %><%- m.module.docstring %><% end %>
   <% if m.module.classes.length > 0: %>
 #### Classes
     <% for cls in m.module.classes: %>

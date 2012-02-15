@@ -9,7 +9,6 @@ This script generates html documentation from a coffeescript source file
 fs = require('fs')
 path = require('path')
 eco = require('eco')
-showdown = require(__dirname + '/../vendor/showdown').Showdown
 coffeedoc = require(__dirname + '/coffeedoc')
 parsers = require(__dirname + '/parsers')
 
@@ -51,16 +50,6 @@ if opts.length == 0
     opts = ['.']
 
 
-renderMarkdown = (obj) ->
-    ###
-    Helper function that transforms markdown docstring within an AST node
-    into html, in place
-    ###
-    if obj.docstring
-        obj.docstring = showdown.makeHtml(obj.docstring)
-    return null
-
-
 # Fetch resources
 module_template = fs.readFileSync(__dirname + '/../resources/module.eco', 'utf-8')
 index_template = fs.readFileSync(__dirname + '/../resources/index.eco', 'utf-8')
@@ -75,25 +64,20 @@ getSourceFiles = (target) ->
         getSourceFiles(path.join(target, p)) for p in fs.readdirSync(target)
 getSourceFiles(o) for o in opts
 
-pathFixup = (path) ->
-    path.replace('/', ':')
-
-indenter = (text, spaces, hlevel, llevel) ->
-   ###
-   eco helper function which indents markdown properly and adjusts headers and lists accordingly.
-   ###
-   bits = text.split('\n')
-   newbits = []
-   for b in bits
-       newbits.push((spaces * ' ') + b)
-   newbits.join('\n')
+wikiize = (path) ->
+    bits = path.split('/')
+    bucket = []
+    for b in bits
+      bucket.push "#{b[0].toUpperCase()}#{b.substring 1}"
+    console.log bucket
+    bucket.join(':')
 
 if sources.length > 0
     modules = []
     
 
-    # TODO don't make subdirectories for modules!
     # Make output directory
+
     if path.existsSync(outputdir)
         # Recursively delete outputdir if it already exists
         rm = (target) ->
@@ -110,19 +94,13 @@ if sources.length > 0
     for source, idx in sources
         script = fs.readFileSync(source, 'utf-8')
 
-        # If source is in a subfolder, make a matching subfolder in outputdir
-        if source.indexOf('/') != -1
-            docpath = outputdir
-            sourcepath = source.split('/')
-            for dir in sourcepath[0...sourcepath.length - 1]
-                docpath = path.join(docpath, dir)
-                if not path.existsSync(docpath)
-                    fs.mkdirSync(docpath, '755')
+        console.log source_names[idx]
 
         # Fetch documentation information
         documentation =
-            filename: source_names[idx]
+            filename: wikiize source_names[idx]
             module_name: path.basename(source)
+            qualified_name: source
             module: coffeedoc.documentModule(script, parser)
 
         # Check for classes inheriting from classes in other modules
@@ -136,22 +114,13 @@ if sources.length > 0
                         cls.parent_module = module_path
                         cls.parent_name = clspath.join('.')
 
-        # TODO: remove this, since we're not rendering markdown ever. 
-        # Convert markdown to html
-        #renderMarkdown(documentation.module)
-        #for c in documentation.module.classes
-        #    renderMarkdown(c)
-        #    renderMarkdown(m) for m in c.staticmethods
-        #    renderMarkdown(m) for m in c.instancemethods
-        #renderMarkdown(f) for f in documentation.module.functions
-
-        documentation['indenter'] = indenter
+        documentation['wikiize'] = wikiize
 
         # Generate docs
         md = eco.render(module_template, documentation)
   
         # Write to file
-        fs.writeFile(path.join(outputdir, pathFixup(documentation.filename + '.md')), md)
+        fs.writeFile(path.join(outputdir, documentation.filename + '.md'), md)
 
         # Save to modules array for the index page
         modules.push(documentation)
@@ -159,5 +128,5 @@ if sources.length > 0
 
     # Make index page
     index = eco.render(index_template, modules: modules)
-    fs.writeFile(path.join(outputdir, 'Home.md'), index)
+    fs.writeFile(path.join(outputdir, 'ModuleIndex.md'), index)
 

@@ -6,9 +6,7 @@ An API documentation generator for CoffeeScript
 
 CoffeeDoc is a simple API documentation generator for [CoffeeScript][]. It
 reads python-style docstrings in your CoffeeScript class and function
-definitions, passes them through
-[Markdown](http://daringfireball.net/projects/markdown/syntax), and outputs the
-result as easy to read HTML.
+definition and spits out markdown for use in Github's wiki engine.
 
 CoffeeDoc is inspired by the excellent [Docco][], and is intended for projects
 that require more structured API documentation.

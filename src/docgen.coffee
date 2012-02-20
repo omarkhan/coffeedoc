@@ -64,6 +64,8 @@ getSourceFiles = (target) ->
         getSourceFiles(path.join(target, p)) for p in fs.readdirSync(target)
 getSourceFiles(o) for o in opts
 
+sources.sort()
+
 wikiize = (path) ->
     bits = path.split('/')
     bucket = []
@@ -104,6 +106,7 @@ if sources.length > 0
 
     # Iterate over source scripts
     source_names = (s.replace(/\.coffee$/, '') for s in sources)
+
     for source, idx in sources
         script = fs.readFileSync(source, 'utf-8')
 

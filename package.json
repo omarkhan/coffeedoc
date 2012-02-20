@@ -10,7 +10,7 @@
     "wiki"
   ],
   "author": "Andrew Gwozdziewycz",
-  "version": "0.1.0",
+  "version": "0.1.1b",
   "licenses": [
     {
       "type": "MIT",
@@ -25,7 +25,7 @@
     "eco": ">=1.1.0-rc-1"
   },
   "bin": {
-    "coffeedoc": "./bin/coffeedoc-hub"
+    "coffeedoc-hub": "./bin/coffeedoc-hub"
   },
   "devDependencies": {
     "jasmine-node": ">=1.0.6"

@@ -26,7 +26,7 @@ class BaseParser
             }
         ###
         return {}
-    
+
     getClasses: (nodes) ->
         ###
         Return an array of class nodes. Be sure to include classes that are
@@ -179,7 +179,9 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
       arguments and return them in an array.
       ###
       args = []
+      console.log func.params
       for arg in func.params
+
           args.push(arg.name.value)
       return args
 

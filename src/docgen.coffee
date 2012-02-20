@@ -68,14 +68,27 @@ wikiize = (path) ->
     bits = path.split('/')
     bucket = []
     for b in bits
-      bucket.push "#{b[0].toUpperCase()}#{b.substring 1}"
-    console.log bucket
+      if b
+        bucket.push "#{b[0].toUpperCase()}#{b.substring 1}"
     bucket.join(':')
+
+quoteMarkdown = (t) ->
+    ###
+    Its more than possible that a function name will have underscores... quote them.
+    ###
+    t.replace /([^\\])?_/g, "$1\\_"
+
+params = (t) ->
+    a = []
+    for x in t
+        if x?
+           a.push x
+        else
+           a.push '{splat}'
+    a.join ', '
 
 if sources.length > 0
     modules = []
-    
-
     # Make output directory
 
     if path.existsSync(outputdir)
@@ -115,10 +128,12 @@ if sources.length > 0
                         cls.parent_name = clspath.join('.')
 
         documentation['wikiize'] = wikiize
+        documentation['quoteMarkdown'] = quoteMarkdown
+        documentation['params'] = params
 
         # Generate docs
         md = eco.render(module_template, documentation)
-  
+
         # Write to file
         fs.writeFile(path.join(outputdir, documentation.filename + '.md'), md)
 

@@ -8,7 +8,7 @@
     "coffeescript"
   ],
   "author": "Omar Khan",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "licenses": [
     {
       "type": "MIT",
@@ -27,5 +27,6 @@
   },
   "devDependencies": {
     "jasmine-node": ">=1.0.6"
-  }
+  },
+  "optionalDependencies": {}
 }

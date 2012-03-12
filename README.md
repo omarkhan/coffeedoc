@@ -121,3 +121,4 @@ CoffeeDoc is © 2012 Omar Khan, released under the MIT licence. Use it, fork it.
 [Node.js]: http://nodejs.org/
 [eco]: https://github.com/sstephenson/eco
 [Showdown]: http://softwaremaniacs.org/playground/showdown-highlight/
+[Markdown]: http://daringfireball.net/projects/markdown/

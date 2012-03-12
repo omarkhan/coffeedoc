@@ -1,0 +1,54 @@
+# <%= @quoteMarkdown(@module_name) %>
+<% if @module.classes.length > 0: %>
+#### Classes
+  <% for cls in @module.classes: %>
+* [<%= @quoteMarkdown(cls.name) %>](#<%= cls.name %>)
+  <% end %>
+<% end %>
+<% if @module.functions.length > 0: %>
+#### Functions
+  <% for func in @module.functions: %>
+* [<%= @quoteMarkdown(func.name) %>](#<%= func.name %>)
+  <% end %>
+<% end %>
+
+<% if @module.docstring: %>
+  <%- @module.docstring %>
+<% end %>
+
+<% if @module.classes.length > 0: %>
+## Classes
+  <% for cls in @module.classes: %>
+### <a name="<%= cls.name %>">[<%= @quoteMarkdown(cls.name.replace /^exports\./, '') %>](<%= cls.name %>)</a>
+    <% if cls.parent: %>
+      <% if cls.parent_module?: %>
+#### *[extends <%= @quoteMarkdown(cls.parent_module) %>#<%= cls.parent_name %>](#<%= cls.parent %>)*
+      <% else: %>
+#### *[extends <%= @quoteMarkdown(cls.parent) %>](#<%= cls.parent %>)*
+      <% end %>
+    <% end %>
+    <% if cls.docstring: %><%- cls.docstring %><% end %>
+    <% if cls.staticmethods.length > 0: %>
+#### Static Methods
+      <% for method in cls.staticmethods: %>
+##### <a name="<%= method.name %>"/><%= @quoteMarkdown(method.name) %>(<%= @params(method.params) %>)</a>
+<% if method.docstring: %><%- method.docstring %><% end %>
+      <% end %>
+    <% end %>
+    <% if cls.instancemethods.length > 0: %>
+#### Instance Methods          
+      <% for method in cls.instancemethods: %>
+##### <a name="<%= method.name %>"><%= @quoteMarkdown(method.name) %>(<%= @params(method.params) %>)</a>
+<% if method.docstring: %><%- method.docstring %><% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if @module.functions.length > 0: %>
+## Functions
+  <% for func in @module.functions: %>
+### <a name="<%= func.name %>"><%= @quoteMarkdown(func.name) %>(<%= @params(func.params) %>)</a>
+<% if func.docstring: %><%- func.docstring %><% end %>
+  <% end %>
+<% end %>

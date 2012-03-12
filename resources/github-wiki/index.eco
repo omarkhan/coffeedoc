@@ -1,0 +1,17 @@
+# Module index
+  <% for m in @modules: %>
+## [<%= m.qualified_name %>](./<%= m.filename %>)
+  <% end %>
+  <% if m.module.docstring: %><%- m.module.docstring %><% end %>
+  <% if m.module.classes.length > 0: %>
+#### Classes
+    <% for cls in m.module.classes: %>
+* [<%= cls.name %>](<%= m.filename %>#<%= cls.name %>)
+    <% end %>
+  <% end %>
+  <% if m.module.functions.length > 0: %>
+#### Functions
+    <% for func in m.module.functions: %>
+* [<%= func.name %>](<%= m.filename %>#<%= func.name %>)
+    <% end %>
+  <% end %>

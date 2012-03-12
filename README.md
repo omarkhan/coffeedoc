@@ -4,11 +4,12 @@ CoffeeDoc
 An API documentation generator for CoffeeScript
 -----------------------------------------------
 
-CoffeeDoc is a simple API documentation generator for [CoffeeScript][]. It
-reads python-style docstrings in your CoffeeScript class and function
-definitions, passes them through
-[Markdown](http://daringfireball.net/projects/markdown/syntax), and outputs the
-result as easy to read HTML.
+CoffeeDoc is a simple API documentation generator for [CoffeeScript][] It reads
+python-style docstrings in your CoffeeScript class and function definitions,
+passes them through [Markdown][] and outputs the result as easy to read HTML.
+
+Thanks to [apgwoz](https://github.com/apgwoz), CoffeeDoc can also generate [wiki
+pages for Github](https://github.com/apgwoz/coffeedoc-hub/wiki/Src:Coffeedoc)!
 
 CoffeeDoc is inspired by the excellent [Docco][], and is intended for projects
 that require more structured API documentation.
@@ -68,9 +69,10 @@ CoffeeDoc can be run from the command line:
     Usage: coffeedoc [options] [targets]
 
     Options:
-        -o, --output: Set output directory (default: ./docs)
-        --commonjs  : Use if target scripts use CommonJS for module loading (default)
-        --requirejs : Use if target scripts use RequireJS for module loading
+        -o, --output : Set output directory (default: ./docs)
+        --commonjs   : Use if target scripts use CommonJS for module loading (default)
+        --requirejs  : Use if target scripts use RequireJS for module loading
+        --github-wiki: Use if generating Markdown for Github wiki
 
 If [targets] is a directory, CoffeeDoc will recursively document all `.coffee`
 files found under that directory.
@@ -112,7 +114,7 @@ to generate the html output.
 
 ### Licence ###
 
-CoffeeDoc is © 2011 Omar Khan, released under the MIT licence. Use it, fork it.
+CoffeeDoc is © 2012 Omar Khan, released under the MIT licence. Use it, fork it.
 
 [CoffeeScript]: http://jashkenas.github.com/coffee-script/
 [Docco]: http://jashkenas.github.com/docco/

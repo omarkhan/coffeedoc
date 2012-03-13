@@ -18,6 +18,7 @@ class Renderer
     moduleFilename: (x) -> x
     finish: ->
 
+
 class HtmlRenderer extends Renderer
     constructor: (outputdir, sources) ->
         super(outputdir, sources)
@@ -46,6 +47,9 @@ class HtmlRenderer extends Renderer
         this._renderMarkdown(f) for f in context.module.functions
         super(context)
 
+    moduleFilename: (x) ->
+        return x + '.coffee'
+
     finish: =>
         ###
         Writes CSS files out to resources
@@ -58,6 +62,7 @@ class HtmlRenderer extends Renderer
 
     fileExtension: -> '.html'
     indexFile: -> 'index.html'
+
 
 class GithubWikiRenderer extends Renderer
     constructor: (outputdir, sources) ->

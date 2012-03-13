@@ -4,7 +4,7 @@ CoffeeDoc
 An API documentation generator for CoffeeScript
 -----------------------------------------------
 
-CoffeeDoc is a simple API documentation generator for [CoffeeScript][] It reads
+CoffeeDoc is a simple API documentation generator for [CoffeeScript][]. It reads
 python-style docstrings in your CoffeeScript class and function definitions,
 passes them through [Markdown][] and outputs the result as easy to read HTML.
 

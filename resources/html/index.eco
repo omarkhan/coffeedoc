@@ -15,7 +15,7 @@
     <div id="sidebar">
       <ul id="modulelist">
         <% for m in @modules: %>
-        <li><a href="<%= m.filename %>.html"><%= m.filename %>.coffee</a></li>
+        <li><a href="<%= m.filename %>.html"><%= m.filename %></a></li>
         <% end %>
       </ul>
     </div>

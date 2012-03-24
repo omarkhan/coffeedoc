@@ -19,6 +19,7 @@ OPTIONS =
     '--commonjs   ': 'Use if target scripts use CommonJS for module loading (default)'
     '--requirejs  ': 'Use if target scripts use RequireJS for module loading'
     '--github-wiki': 'Use if generating Markdown for Github wiki'
+    '--json':        'Use if generating JSON for an external renderer'
 
 help = ->
     ### Show help message and exit ###
@@ -52,6 +53,9 @@ else
 
 if '--github-wiki' in opts
     rendercls = renderers.GithubWikiRenderer
+    opts.shift()
+else if '--json' in opts
+    rendercls = renderers.JSONRenderer
     opts.shift()
 else
     rendercls = renderers.HtmlRenderer
@@ -123,11 +127,12 @@ if sources.length > 0
                         cls.parent_module = module_path
                         cls.parent_name = clspath.join('.')
 
-        # Generate docs
-        result = renderer.renderModule(documentation)
+        unless rendercls is renderers.JSONRenderer
+          # Generate docs for current module
+          result = renderer.renderModule(documentation)
 
-        # Write to file
-        fs.writeFile(path.join(outputdir, documentation.filename + renderer.fileExtension()), result)
+          # Write to file
+          fs.writeFile(path.join(outputdir, documentation.filename + renderer.fileExtension()), result)
 
         # Save to modules array for the index page
         modules.push(documentation)

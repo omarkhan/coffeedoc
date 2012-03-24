@@ -106,6 +106,20 @@ class GithubWikiRenderer extends Renderer
     indexFile: -> 'ModuleIndex.md'
     shouldMakeSubdirs: -> false
 
+class JSONRenderer extends Renderer
+    constructor: (outputdir, sources) ->
+        this.outputdir = outputdir
+        this.sources = sources
+
+    renderIndex: JSON.stringify
+
+    renderModule: JSON.stringify
+
+    shouldMakeSubdirs: -> false
+    moduleFilename: (x) -> x
+    fileExtension: -> '.json'
+    indexFile: -> "index.json"
 
 exports.GithubWikiRenderer = GithubWikiRenderer
 exports.HtmlRenderer = HtmlRenderer
+exports.JSONRenderer = JSONRenderer

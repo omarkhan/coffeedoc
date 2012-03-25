@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "coffee-script": ">=1.1.1",
-    "eco": ">=1.1.0-rc-1"
+    "eco": ">=1.1.0-rc-1",
+    "optimist", ">=0.3.1"
   },
   "bin": {
     "coffeedoc": "./bin/coffeedoc"

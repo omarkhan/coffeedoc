@@ -86,7 +86,7 @@ exports.CommonJSParser = class CommonJSParser extends BaseParser
                 when n.type == 'Assign' and n.value.type == 'Code')
 
 
-exports.RequireJSParser = class RequireJSParser extends BaseParser
+class RequireJSParser extends BaseParser
   ###
   Not yet tested
   ###
@@ -241,3 +241,6 @@ exports.RequireJSParser = class RequireJSParser extends BaseParser
   getFunctions: (nodes) ->
       return (n for n in nodes \
               when n.type == 'Assign' and n.value.type == 'Code')
+
+exports.commonjs  = CommonJSParser
+exports.requirejs = RequireJSParser

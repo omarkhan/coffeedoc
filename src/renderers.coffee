@@ -116,10 +116,10 @@ class JSONRenderer extends Renderer
     renderModule: JSON.stringify
 
     shouldMakeSubdirs: -> false
-    moduleFilename: (x) -> x
-    fileExtension: -> '.json'
-    indexFile: -> "index.json"
+    moduleFilename: (x) -> false # No individual file output
+    fileExtension: -> '.doc.json'
+    indexFile: -> "index.doc.json"
 
-exports.GithubWikiRenderer = GithubWikiRenderer
-exports.HtmlRenderer = HtmlRenderer
-exports.JSONRenderer = JSONRenderer
+exports.html = HtmlRenderer
+exports.gfm  = GithubWikiRenderer
+exports.json = JSONRenderer

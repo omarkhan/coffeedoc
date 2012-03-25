@@ -12,57 +12,42 @@ coffeedoc = require(__dirname + '/coffeedoc')
 parsers = require(__dirname + '/parsers')
 renderers = require(__dirname + '/renderers')
 
-
 # Command line options
-OPTIONS =
-    '-o, --output ': 'Set output directory (default: ./docs)'
-    '--commonjs   ': 'Use if target scripts use CommonJS for module loading (default)'
-    '--requirejs  ': 'Use if target scripts use RequireJS for module loading'
-    '--github-wiki': 'Use if generating Markdown for Github wiki'
-    '--json':        'Use if generating JSON for an external renderer'
+opts = require('optimist')
+    .usage('''Usage: coffeedoc [options] [targets]''')
+    .describe('output', 'Set output directory (default: ./docs)')
+    .default('output', 'docs')
+    .alias('o', 'output')
+    .describe('parser', "Parser to use. Available parsers: #{Object.keys(parsers)}")
+    .default('parser', 'commonjs')
+    .describe('renderer', "Renderer to use. Available renderers: #{Object.keys(renderers)}")
+    .default('renderer', 'html')
+    .describe('stdout', 'Direct all output to stdout instead of files')
+    .boolean('stdout')
+    .describe('help', 'Show this help.')
+    .alias('h', 'help')
 
-help = ->
-    ### Show help message and exit ###
-    console.log('Usage: coffeedoc [options] [targets]\n')
-    console.log('Options:')
-    for flag, description of OPTIONS
-        console.log('    ' + flag + ': ' + description)
+argv = opts.argv
+
+if argv._.length == 0 then argv._.push '.'
+
+if argv.help
+    opts.showHelp()
     process.exit()
 
-opts = process.argv[2...process.argv.length]
-if opts.length == 0 then help()
+rendercls = renderers[argv.renderer]
+if not rendercls?
+    console.error "Invalid renderer: #{argv.renderer}\n"
+    opts.showHelp()
+    process.exit()
 
-outputdir = 'docs'
-for o, idx in opts
-    if o == '-o' or o == '--output'
-        outputdir = opts[idx + 1]
-        opts.splice(idx, 2)
-        break
+parsercls = parsers[argv.parser]
+if not parsercls?
+    console.error "Invalid parser: #{argv.parser}\n"
+    opts.showHelp()
+    process.exit()
 
-if '-h' in opts or '--help' in opts
-    help()
-
-if '--commonjs' in opts
-    opts.shift()
-    parser = new parsers.CommonJSParser()
-else if '--requirejs' in opts
-    opts.shift()
-    parser = new parsers.RequireJSParser()
-else
-    parser = new parsers.CommonJSParser()
-
-if '--github-wiki' in opts
-    rendercls = renderers.GithubWikiRenderer
-    opts.shift()
-else if '--json' in opts
-    rendercls = renderers.JSONRenderer
-    opts.shift()
-else
-    rendercls = renderers.HtmlRenderer
-
-if opts.length == 0
-    opts = ['.']
-
+parser = new parsercls()
 
 # Get source file paths
 sources = []
@@ -71,25 +56,31 @@ getSourceFiles = (target) ->
         sources.push(target)
     else if fs.statSync(target).isDirectory()
         getSourceFiles(path.join(target, p)) for p in fs.readdirSync(target)
-getSourceFiles(o) for o in opts
+getSourceFiles(o) for o in argv._
 sources.sort()
 
-renderer = new rendercls(outputdir, sources)
+renderer = new rendercls(argv.output, sources)
 
 if sources.length > 0
     modules = []
 
-    # Make output directory
-    if path.existsSync(outputdir)
-        # Recursively delete outputdir if it already exists
-        rm = (target) ->
-            if fs.statSync(target).isDirectory()
-                rm(path.join(target, p)) for p in fs.readdirSync(target)
-                fs.rmdirSync(target)
-            else
-                fs.unlinkSync(target)
-        rm(outputdir)
-    fs.mkdirSync(outputdir, '755')
+    # Set up output functions
+    if argv.stdout
+        output = (path, data) -> process.stdout.write data
+    else
+        output = (path, data) -> fs.writeFile path, data
+
+        # Make output directory
+        if path.existsSync(argv.output)
+            # Recursively delete argv.output if it already exists
+            rm = (target) ->
+                if fs.statSync(target).isDirectory()
+                    rm(path.join(target, p)) for p in fs.readdirSync(target)
+                    fs.rmdirSync(target)
+                else
+                    fs.unlinkSync(target)
+            rm(argv.output)
+        fs.mkdirSync(argv.output, '755')
 
     # Iterate over source scripts
     source_names = (s.replace(/\.coffee$/, '') for s in sources)
@@ -99,7 +90,7 @@ if sources.length > 0
 
         resourcepath = 'resources/'
         if source.indexOf('/') != -1 and renderer.shouldMakeSubdirs()
-            docpath = outputdir
+            docpath = argv.output
             sourcepath = source.split('/')
             for dir in sourcepath[0...sourcepath.length - 1]
                 resourcepath = '../' + resourcepath
@@ -127,12 +118,11 @@ if sources.length > 0
                         cls.parent_module = module_path
                         cls.parent_name = clspath.join('.')
 
-        unless rendercls is renderers.JSONRenderer
+        # If there is no filename do not output this modules documentation
+        if documentation.filename
           # Generate docs for current module
           result = renderer.renderModule(documentation)
-
-          # Write to file
-          fs.writeFile(path.join(outputdir, documentation.filename + renderer.fileExtension()), result)
+          output(path.join(argv.output, documentation.filename + renderer.fileExtension()), result)
 
         # Save to modules array for the index page
         modules.push(documentation)
@@ -140,5 +130,5 @@ if sources.length > 0
 
     # Make index page
     index = renderer.renderIndex(modules)
-    fs.writeFile(path.join(outputdir, renderer.indexFile()), index)
+    output(path.join(argv.output, renderer.indexFile()), index)
     renderer.finish()

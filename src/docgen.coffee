@@ -29,9 +29,7 @@ opts = require('optimist')
 
 argv = opts.argv
 
-if argv._.length == 0 then argv._.push '.'
-
-if argv.help
+if argv.help or argv._.length == 0
     opts.showHelp()
     process.exit()
 

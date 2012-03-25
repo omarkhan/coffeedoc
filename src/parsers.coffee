@@ -41,7 +41,7 @@ class BaseParser
         return []
 
 
-exports.CommonJSParser = class CommonJSParser extends BaseParser
+class CommonJSParser extends BaseParser
     ###
     Parses code written according to CommonJS specifications:
 

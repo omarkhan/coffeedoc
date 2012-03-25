@@ -69,10 +69,10 @@ CoffeeDoc can be run from the command line:
     Usage: coffeedoc [options] [targets]
 
     Options:
-        -o, --output : Set output directory (default: ./docs)
-        --commonjs   : Use if target scripts use CommonJS for module loading (default)
-        --requirejs  : Use if target scripts use RequireJS for module loading
-        --github-wiki: Use if generating Markdown for Github wiki
+      --output, -o  Set output directory                                  [default: "docs"]
+      --parser      Parser to use. Available parsers: commonjs,requirejs  [default: "commonjs"]
+      --renderer    Renderer to use. Available renderers: html,gfm,json   [default: "html"]
+      --stdout      Direct all output to stdout instead of files          [boolean]
 
 If [targets] is a directory, CoffeeDoc will recursively document all `.coffee`
 files found under that directory.

@@ -15,7 +15,7 @@ renderers = require(__dirname + '/renderers')
 # Command line options
 opts = require('optimist')
     .usage('''Usage: coffeedoc [options] [targets]''')
-    .describe('output', 'Set output directory (default: ./docs)')
+    .describe('output', 'Set output directory')
     .default('output', 'docs')
     .alias('o', 'output')
     .describe('parser', "Parser to use. Available parsers: #{Object.keys(parsers)}")

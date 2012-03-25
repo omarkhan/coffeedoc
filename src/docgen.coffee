@@ -62,13 +62,8 @@ renderer = new rendercls(argv.output, sources)
 if sources.length > 0
     modules = []
 
-    # Set up output functions
-    if argv.stdout
-        output = (path, data) -> process.stdout.write data
-    else
-        output = (path, data) -> fs.writeFile path, data
-
-        # Make output directory
+    # Unless we are printing to stdout, make output directory
+    if not argv.stdout
         if path.existsSync(argv.output)
             # Recursively delete argv.output if it already exists
             rm = (target) ->
@@ -92,9 +87,10 @@ if sources.length > 0
             sourcepath = source.split('/')
             for dir in sourcepath[0...sourcepath.length - 1]
                 resourcepath = '../' + resourcepath
-                docpath = path.join(docpath, dir)
-                if not path.existsSync(docpath)
-                    fs.mkdirSync(docpath, '755')
+                if not argv.stdout
+                    docpath = path.join(docpath, dir)
+                    if not path.existsSync(docpath)
+                        fs.mkdirSync(docpath, '755')
 
 
         # Fetch documentation information
@@ -117,10 +113,10 @@ if sources.length > 0
                         cls.parent_name = clspath.join('.')
 
         # If there is no filename do not output this modules documentation
-        if documentation.filename
-          # Generate docs for current module
-          result = renderer.renderModule(documentation)
-          output(path.join(argv.output, documentation.filename + renderer.fileExtension()), result)
+        if documentation.filename and not argv.stdout
+            # Generate docs for current module
+            result = renderer.renderModule(documentation)
+            fs.writeFile(path.join(argv.output, documentation.filename + renderer.fileExtension()), result)
 
         # Save to modules array for the index page
         modules.push(documentation)
@@ -128,5 +124,8 @@ if sources.length > 0
 
     # Make index page
     index = renderer.renderIndex(modules)
-    output(path.join(argv.output, renderer.indexFile()), index)
+    if argv.stdout
+        process.stdout.write(index)
+    else
+        fs.writeFile(path.join(argv.output, renderer.indexFile()), index)
     renderer.finish()

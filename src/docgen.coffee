@@ -112,6 +112,9 @@ if sources.length > 0
                         cls.parent_module = module_path
                         cls.parent_name = clspath.join('.')
 
+        # Apply preprocessing to the documentation as defined by the selected renderer
+        renderer.preprocess(documentation)
+
         # If there is no filename do not output this modules documentation
         if documentation.filename and not argv.stdout
             # Generate docs for current module

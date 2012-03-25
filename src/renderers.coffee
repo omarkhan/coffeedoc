@@ -8,6 +8,13 @@ class Renderer
         this.outputdir = outputdir
         this.sources = sources
 
+    preprocess: (context) ->
+        ###
+        This method should apply any transformations to module documentation
+        before it is passed to the template. Transformations should be made in
+        place - the return value is ignored.
+        ###
+
     renderIndex: (modules) =>
         eco.render(this.index_template, modules: modules)
 
@@ -37,15 +44,16 @@ class HtmlRenderer extends Renderer
             obj.docstring = showdown.makeHtml(obj.docstring)
         return null
 
-    renderModule: (context) =>
-        # Convert markdown to html
+    preprocess: (context) =>
+        ###
+        Convert markdown to html.
+        ###
         this._renderMarkdown(context.module)
         for c in context.module.classes
             this._renderMarkdown(c)
             this._renderMarkdown(m) for m in c.staticmethods
             this._renderMarkdown(m) for m in c.instancemethods
         this._renderMarkdown(f) for f in context.module.functions
-        super(context)
 
     moduleFilename: (x) ->
         return x + '.coffee'
@@ -96,11 +104,10 @@ class GithubWikiRenderer extends Renderer
     moduleFilename: (x) =>
         return this._wikiize(x)
 
-    renderModule: (context) =>
+    preprocess: (context) =>
         context.wikiize = this._wikiize
         context.quoteMarkdown = this._quoteMarkdown
         context.params = this._params
-        super(context)
 
     fileExtension: -> '.md'
     indexFile: -> 'ModuleIndex.md'
@@ -118,7 +125,7 @@ class JSONRenderer extends Renderer
     shouldMakeSubdirs: -> false
     moduleFilename: (x) -> false # No individual file output
     fileExtension: -> '.doc.json'
-    indexFile: -> "index.doc.json"
+    indexFile: -> 'index.doc.json'
 
 exports.html = HtmlRenderer
 exports.gfm  = GithubWikiRenderer

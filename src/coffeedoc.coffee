@@ -10,7 +10,7 @@ helpers = require(__dirname + '/helpers')
 getNodes = helpers.getNodes
 getFullName = helpers.getFullName
 
-exports.documentModule = (script, parser) ->
+documentModule = (script, parser) ->
     ###
     Given a module's source code and an AST parser, returns module information
     in the form:
@@ -160,3 +160,5 @@ formatDocstring = (str) ->
     leading_whitespace = new RegExp("^\\s{#{ indentation }}")
     return (line.replace(leading_whitespace, '') for line in lines).join('\n')
 
+
+exports.documentModule = documentModule

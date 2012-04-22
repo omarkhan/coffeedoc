@@ -32,8 +32,6 @@ class HtmlRenderer extends Renderer
         this.module_template = fs.readFileSync(__dirname + '/../resources/html/module.eco', 'utf-8')
         this.index_template = fs.readFileSync(__dirname + '/../resources/html/index.eco', 'utf-8')
         this.base_css = fs.readFileSync(__dirname + '/../resources/html/base.css', 'utf-8')
-        this.module_css = fs.readFileSync(__dirname + '/../resources/html/module.css', 'utf-8')
-        this.index_css = fs.readFileSync(__dirname + '/../resources/html/index.css', 'utf-8')
 
     _renderMarkdown: (obj) ->
         ###

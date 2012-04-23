@@ -261,6 +261,7 @@ h1, h2, h3 {
 }
 .class .header {
   border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
 }
 .class .header h3 {
   display: inline;

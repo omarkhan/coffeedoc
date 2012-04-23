@@ -11,6 +11,9 @@ passes them through [Markdown][] and outputs the result as easy to read HTML.
 Thanks to [apgwoz](https://github.com/apgwoz), CoffeeDoc can also generate [wiki
 pages for Github](https://github.com/apgwoz/coffeedoc-hub/wiki/Src:Coffeedoc)!
 
+CoffeeDoc can also return your documentation as JSON, so you can run it through
+an external documentation system such as [Sphinx][].
+
 CoffeeDoc is inspired by the excellent [Docco][], and is intended for projects
 that require more structured API documentation.
 
@@ -44,14 +47,14 @@ myFunc = (arg1, arg2, args...) ->
 ```
 
 The documentation generated from the above script can be seen
-[here](http://omarkhan.github.com/coffeedoc/example.html). For a more
-interesting example, here is [the result of running coffeedoc against
-`src/coffeedoc.coffee`](http://omarkhan.github.com/coffeedoc/coffeedoc.html).
+[here](http://omarkhan.github.com/coffeedoc/test/example.coffee.html). For a
+more interesting example, here is [the result of running coffeedoc against
+`src/coffeedoc.coffee`](http://omarkhan.github.com/coffeedoc/src/coffeedoc.coffee.html).
 
 ### Installation ###
 
-CoffeeDoc requires [Node.js][], [CoffeeScript][], and [eco][]. Install using
-npm with the following command:
+CoffeeDoc requires [Node.js][], [CoffeeScript][], [eco][], and [optimist][].
+Install using npm with the following command:
 
     sudo npm install -g coffeedoc
 
@@ -112,13 +115,25 @@ Docstrings are passed through [Showdown][], a javascript port of Markdown
 The resulting documentation information is then passed to an [eco][] template
 to generate the html output.
 
+### TODO ###
+
+- Syntax highlighting
+- Doctests
+
+### Alternatives ###
+
+- [Docco][] for literate programming style docs.
+- [Codo][] for something more ruby than python.
+
 ### Licence ###
 
 CoffeeDoc is © 2012 Omar Khan, released under the MIT licence. Use it, fork it.
 
 [CoffeeScript]: http://jashkenas.github.com/coffee-script/
+[Sphinx]: http://sphinx.pocoo.org/
 [Docco]: http://jashkenas.github.com/docco/
 [Node.js]: http://nodejs.org/
-[eco]: https://github.com/sstephenson/eco
+[eco]: http://github.com/sstephenson/eco
+[optimist]: http://github.com/substack/node-optimist
 [Showdown]: http://softwaremaniacs.org/playground/showdown-highlight/
 [Markdown]: http://daringfireball.net/projects/markdown/

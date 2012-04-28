@@ -18,13 +18,15 @@ opts = require('optimist')
     .describe('output', 'Set output directory')
     .default('output', 'docs')
     .alias('o', 'output')
-    .describe('parser', "Parser to use. Available parsers: #{Object.keys(parsers)}")
+    .describe('parser', "Parser to use. Available parsers: #{Object.keys(parsers).join(', ')}")
     .default('parser', 'commonjs')
-    .describe('renderer', "Renderer to use. Available renderers: #{Object.keys(renderers)}")
+    .describe('renderer', "Renderer to use. Available renderers: #{Object.keys(renderers).join(', ')}")
     .default('renderer', 'html')
     .describe('stdout', 'Direct all output to stdout instead of files')
     .boolean('stdout')
-    .describe('help', 'Show this help.')
+    .describe('ignore', 'Files or directories to ignore')
+    .alias('i', 'ignore')
+    .describe('help', 'Show this help')
     .alias('h', 'help')
 
 argv = opts.argv
@@ -45,11 +47,22 @@ if not parsercls?
     opts.showHelp()
     process.exit()
 
+if argv.ignore?
+    if argv.ignore instanceof Array
+        ignore = argv.ignore
+    else
+        ignore = [argv.ignore]
+else
+    ignore = []
+ignore = (path.resolve(i) for i in ignore)
+
 parser = new parsercls()
 
 # Get source file paths
 sources = []
 getSourceFiles = (target) ->
+    if path.resolve(target) in ignore
+        return
     if path.extname(target) == '.coffee'
         sources.push(target)
     else if fs.statSync(target).isDirectory()

@@ -1,6 +1,7 @@
 fs = require('fs')
 path = require('path')
 eco = require('eco')
+traverse = require('traverse')
 highlight = require('highlight').Highlight
 showdown = require(__dirname + '/../vendor/showdown').Showdown
 
@@ -13,9 +14,9 @@ class Renderer
     preprocess: (context) ->
         ###
         This method should apply any transformations to module documentation
-        before it is passed to the template. Transformations should be made in
-        place - the return value is ignored.
+        before it is passed to the template.
         ###
+        return context
 
     renderIndex: (modules) =>
         eco.render(this.index_template, modules: modules)
@@ -35,25 +36,15 @@ class HtmlRenderer extends Renderer
         this.index_template = fs.readFileSync(__dirname + '/../resources/html/index.eco', 'utf-8')
         this.base_css = fs.readFileSync(__dirname + '/../resources/html/base.css', 'utf-8')
 
-    _renderMarkdown: (obj) ->
-        ###
-        Helper function that transforms markdown docstring within an AST node
-        into html, in place. Adds syntax highlighting to any code blocks.
-        ###
-        if obj.docstring
-            obj.docstring = highlight(showdown.makeHtml(obj.docstring), false, true)
-        return null
-
     preprocess: (context) =>
         ###
-        Convert markdown to html.
+        Convert markdown to html, adding syntax highlighting markup to any code
+        blocks.
         ###
-        this._renderMarkdown(context.module)
-        for c in context.module.classes
-            this._renderMarkdown(c)
-            this._renderMarkdown(m) for m in c.staticmethods
-            this._renderMarkdown(m) for m in c.instancemethods
-        this._renderMarkdown(f) for f in context.module.functions
+        context = super(context)
+        return traverse(context).map (value) ->
+          if value and this.key == 'docstring'
+            this.update(highlight(showdown.makeHtml(value), false, true))
 
     moduleFilename: (x) ->
         return x + '.coffee'
@@ -84,13 +75,13 @@ class GithubWikiRenderer extends Renderer
         for b in bits
             if b
                 bucket.push "#{b[0].toUpperCase()}#{b.substring 1}"
-        bucket.join(':')
+        return bucket.join(':')
 
     _quoteMarkdown: (t) ->
         ###
         Its more than possible that a function name will have underscores... quote them.
         ###
-        t.replace(/([^\\])?_/g, "$1\\_")
+        return t.replace(/([^\\])?_/g, "$1\\_")
 
     _params: (t) ->
         a = []
@@ -99,7 +90,7 @@ class GithubWikiRenderer extends Renderer
                a.push x
             else
                a.push '{splat}'
-        a.join ', '
+        return a.join ', '
 
     moduleFilename: (x) =>
         return this._wikiize(x)
@@ -108,10 +99,12 @@ class GithubWikiRenderer extends Renderer
         context.wikiize = this._wikiize
         context.quoteMarkdown = this._quoteMarkdown
         context.params = this._params
+        return context
 
     fileExtension: -> '.md'
     indexFile: -> 'ModuleIndex.md'
     shouldMakeSubdirs: -> false
+
 
 class JSONRenderer extends Renderer
     constructor: (outputdir, sources) ->
@@ -126,6 +119,7 @@ class JSONRenderer extends Renderer
     moduleFilename: (x) -> false # No individual file output
     fileExtension: -> '.doc.json'
     indexFile: -> 'index.doc.json'
+
 
 exports.html = HtmlRenderer
 exports.gfm  = GithubWikiRenderer

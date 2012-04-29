@@ -22,7 +22,8 @@
     "coffee-script": ">=1.1.1",
     "eco": ">=1.1.0-rc-1",
     "optimist": ">=0.3.1",
-    "highlight": ">=0.2.2"
+    "highlight": ">=0.2.2",
+    "traverse": ">=0.6.1"
   },
   "bin": {
     "coffeedoc": "./bin/coffeedoc"

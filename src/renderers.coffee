@@ -1,3 +1,11 @@
+###
+Renderers
+=========
+
+These classes generate output from documentation objects as returned by the
+`documentModule` function from the `coffeedoc` module.
+###
+
 fs = require('fs')
 path = require('path')
 eco = require('eco')
@@ -7,7 +15,10 @@ showdown = require(__dirname + '/../vendor/showdown').Showdown
 
 
 class Renderer
-
+    ###
+    Base class for renderers. To create a new renderer, subclass this and
+    override the necessary properties and methods.
+    ###
     indexTemplate: null
     moduleTemplate: null
     indexFile: 'index'
@@ -34,6 +45,10 @@ class Renderer
         fs.mkdirSync(outputdir, '755')
 
     preprocess: (module) ->
+        ###
+        Apply any preprocessing to module documentation before it is handed off
+        to the template for rendering.
+        ###
         return module
 
     write: (modules, outputdir) =>

@@ -70,7 +70,7 @@ getSourceFiles = (target) ->
 getSourceFiles(o) for o in argv._
 sources.sort()
 
-renderer = new rendercls(argv.output, sources)
+renderer = new rendercls(argv.output)
 
 if sources.length > 0
     modules = []

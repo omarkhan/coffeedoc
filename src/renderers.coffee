@@ -7,9 +7,8 @@ showdown = require(__dirname + '/../vendor/showdown').Showdown
 
 
 class Renderer
-    constructor: (outputdir, sources) ->
+    constructor: (outputdir) ->
         this.outputdir = outputdir
-        this.sources = sources
 
     preprocess: (context) ->
         ###
@@ -30,8 +29,8 @@ class Renderer
 
 
 class HtmlRenderer extends Renderer
-    constructor: (outputdir, sources) ->
-        super(outputdir, sources)
+    constructor: (outputdir) ->
+        super(outputdir)
         this.module_template = fs.readFileSync(__dirname + '/../resources/html/module.eco', 'utf-8')
         this.index_template = fs.readFileSync(__dirname + '/../resources/html/index.eco', 'utf-8')
         this.base_css = fs.readFileSync(__dirname + '/../resources/html/base.css', 'utf-8')
@@ -64,8 +63,8 @@ class HtmlRenderer extends Renderer
 
 
 class GithubWikiRenderer extends Renderer
-    constructor: (outputdir, sources) ->
-        super(outputdir, sources)
+    constructor: (outputdir) ->
+        super(outputdir)
         this.module_template = fs.readFileSync(__dirname + '/../resources/github-wiki/module.eco', 'utf-8')
         this.index_template = fs.readFileSync(__dirname + '/../resources/github-wiki/index.eco', 'utf-8')
 
@@ -107,9 +106,8 @@ class GithubWikiRenderer extends Renderer
 
 
 class JSONRenderer extends Renderer
-    constructor: (outputdir, sources) ->
-        this.outputdir = outputdir
-        this.sources = sources
+    constructor: (outputdir) ->
+        super(outputdir)
 
     renderIndex: JSON.stringify
 

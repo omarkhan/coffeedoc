@@ -2,7 +2,7 @@
 Documentation generator
 =======================
 
-This script generates html documentation from a coffeescript source file
+Process command line options and generate documentation for the given input.
 ###
 
 # Imports
@@ -47,6 +47,9 @@ if not parsercls?
     opts.showHelp()
     process.exit()
 
+if argv.stdout
+    argv.output = null
+
 if argv.ignore?
     if Array.isArray(argv.ignore)
         ignore = argv.ignore
@@ -58,7 +61,7 @@ ignore = (path.resolve(i) for i in ignore)
 
 parser = new parsercls()
 
-# Get source file paths
+# Get source file paths.
 sources = []
 getSourceFiles = (target) ->
     if path.resolve(target) in ignore
@@ -70,78 +73,31 @@ getSourceFiles = (target) ->
 getSourceFiles(o) for o in argv._
 sources.sort()
 
-renderer = new rendercls(argv.output)
+renderer = new rendercls()
 
-if sources.length > 0
-    modules = []
+# Build a hash with documentation information for each source file.
+modules = []
+moduleNames = (s.replace(/\.coffee$/, '') for s in sources)
+for source, idx in sources
+    script = fs.readFileSync(source, 'utf-8')
 
-    # Unless we are printing to stdout, make output directory
-    if not argv.stdout
-        if path.existsSync(argv.output)
-            # Recursively delete argv.output if it already exists
-            rm = (target) ->
-                if fs.statSync(target).isDirectory()
-                    rm(path.join(target, p)) for p in fs.readdirSync(target)
-                    fs.rmdirSync(target)
-                else
-                    fs.unlinkSync(target)
-            rm(argv.output)
-        fs.mkdirSync(argv.output, '755')
+    # Fetch documentation information.
+    module = coffeedoc.documentModule(script, parser)
+    module.path = source
+    module.basename = path.basename(source)
 
-    # Iterate over source scripts
-    source_names = (s.replace(/\.coffee$/, '') for s in sources)
+    # Check for classes inheriting from classes in other modules.
+    for cls in module.classes when cls.parent
+        clspath = cls.parent.split('.')
+        if clspath.length > 1
+            prefix = clspath.shift()
+            if prefix of module.deps
+                modulepath = module.deps[prefix]
+                if path.join(path.dirname(source), modulepath) in moduleNames
+                    cls.parentModule = modulepath
+                    cls.parentName = clspath.join('.')
 
-    for source, idx in sources
-        script = fs.readFileSync(source, 'utf-8')
+    modules.push(module)
 
-        resourcepath = 'resources/'
-        if source.indexOf('/') != -1 and renderer.shouldMakeSubdirs()
-            docpath = argv.output
-            sourcepath = source.split('/')
-            for dir in sourcepath[0...sourcepath.length - 1]
-                resourcepath = '../' + resourcepath
-                if not argv.stdout
-                    docpath = path.join(docpath, dir)
-                    if not path.existsSync(docpath)
-                        fs.mkdirSync(docpath, '755')
-
-
-        # Fetch documentation information
-        documentation =
-            filename: renderer.moduleFilename(source_names[idx])
-            module_name: path.basename(source)
-            qualified_name: source
-            module: coffeedoc.documentModule(script, parser)
-            resourcepath: resourcepath
-
-        # Check for classes inheriting from classes in other modules
-        for cls in documentation.module.classes when cls.parent
-            clspath = cls.parent.split('.')
-            if clspath.length > 1
-                prefix = clspath.shift()
-                if prefix of documentation.module.deps
-                    module_path = documentation.module.deps[prefix]
-                    if path.dirname(source) + '/' + module_path in source_names
-                        cls.parent_module = module_path
-                        cls.parent_name = clspath.join('.')
-
-        # Apply preprocessing to the documentation as defined by the selected renderer
-        documentation = renderer.preprocess(documentation)
-
-        # If there is no filename do not output this modules documentation
-        if documentation.filename and not argv.stdout
-            # Generate docs for current module
-            result = renderer.renderModule(documentation)
-            fs.writeFile(path.join(argv.output, documentation.filename + renderer.fileExtension()), result)
-
-        # Save to modules array for the index page
-        modules.push(documentation)
-
-
-    # Make index page
-    index = renderer.renderIndex(modules)
-    if argv.stdout
-        process.stdout.write(index)
-    else
-        fs.writeFile(path.join(argv.output, renderer.indexFile()), index)
-    renderer.finish()
+# Generate the documentation.
+renderer.render(modules, argv.output)

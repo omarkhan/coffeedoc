@@ -1,17 +1,17 @@
 # Module index
-  <% for m in @modules: %>
-## [<%= m.qualified_name %>](./<%= m.filename %>)
+  <% for module in @modules: %>
+## [<%= module.path %>](./<%= module.wikiname %>)
   <% end %>
-  <% if m.module.docstring: %><%- m.module.docstring %><% end %>
-  <% if m.module.classes.length > 0: %>
+  <% if module.docstring: %><%- module.docstring %><% end %>
+  <% if module.classes.length > 0: %>
 #### Classes
-    <% for cls in m.module.classes: %>
-* [<%= cls.name %>](<%= m.filename %>#<%= cls.name %>)
+    <% for cls in module.classes: %>
+* [<%= cls.name %>](<%= module.wikiname %>#<%= cls.name %>)
     <% end %>
   <% end %>
-  <% if m.module.functions.length > 0: %>
+  <% if module.functions.length > 0: %>
 #### Functions
-    <% for func in m.module.functions: %>
-* [<%= func.name %>](<%= m.filename %>#<%= func.name %>)
+    <% for func in module.functions: %>
+* [<%= func.name %>](<%= module.wikiname %>#<%= func.name %>)
     <% end %>
   <% end %>

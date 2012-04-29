@@ -1,7 +1,9 @@
 fs = require('fs')
 path = require('path')
 eco = require('eco')
+highlight = require('highlight').Highlight
 showdown = require(__dirname + '/../vendor/showdown').Showdown
+
 
 class Renderer
     constructor: (outputdir, sources) ->
@@ -36,10 +38,10 @@ class HtmlRenderer extends Renderer
     _renderMarkdown: (obj) ->
         ###
         Helper function that transforms markdown docstring within an AST node
-        into html, in place
+        into html, in place. Adds syntax highlighting to any code blocks.
         ###
         if obj.docstring
-            obj.docstring = showdown.makeHtml(obj.docstring)
+            obj.docstring = highlight(showdown.makeHtml(obj.docstring), false, true)
         return null
 
     preprocess: (context) =>
@@ -58,7 +60,7 @@ class HtmlRenderer extends Renderer
 
     finish: =>
         ###
-        Writes CSS files out to resources
+        Write CSS files out to resources.
         ###
         resourcesdir = path.join(this.outputdir, 'resources')
         fs.mkdir resourcesdir, '755', =>

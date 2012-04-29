@@ -119,7 +119,6 @@ to generate the html output.
 
 ### TODO ###
 
-- Syntax highlighting
 - Doctests
 
 ### Alternatives ###

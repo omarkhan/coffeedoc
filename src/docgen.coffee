@@ -48,7 +48,7 @@ if not parsercls?
     process.exit()
 
 if argv.ignore?
-    if argv.ignore instanceof Array
+    if Array.isArray(argv.ignore)
         ignore = argv.ignore
     else
         ignore = [argv.ignore]

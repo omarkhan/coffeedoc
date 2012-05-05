@@ -10,6 +10,7 @@ declaration styles.
 
 my_module = require(__dirname + '/module')
 lib = require('lib/testmodule')
+{Thing} = require 'thing'
 
 # Classes
 
@@ -49,6 +50,9 @@ class Subclass2 extends my_module.BaseClass
         ### A method ###
 
 class LibClass extends lib.Lib
+
+class SubThing extends Thing
+    ### Does this work with `{Thing} = require 'thing'` syntax? ###
 
 # Functions
 

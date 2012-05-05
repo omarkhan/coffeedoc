@@ -55,16 +55,13 @@ documentClass = (cls) ->
         # Class assigned to variable -- ignore the variable definition
         cls = cls.value
 
-    # Check if class is empty
-    emptyclass = cls.body.expressions.length == 0
-
     # Get docstring
-    first_obj = if emptyclass
-        cls.body.expressions[0]
+    if cls.body.expressions.length <= 1
+        firstObj = cls.body.expressions[0]
     else
-        cls.body.expressions[0].base?.objects?[0]
-    if first_obj?.type == 'Comment'
-        docstring = formatDocstring(first_obj.comment)
+        firstObj = cls.body.expressions[0].base?.objects?[0]
+    if firstObj?.type == 'Comment'
+        docstring = formatDocstring(firstObj.comment)
     else
         docstring = null
 

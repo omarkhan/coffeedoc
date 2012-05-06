@@ -1,7 +1,7 @@
 parsers = require(__dirname + '/../src/parsers')
 coffeedoc = require(__dirname + '/../src/coffeedoc')
 helpers = require(__dirname + '/../src/helpers')
-parser = new parsers.RequireJSParser()
+parser = new parsers.requirejs()
 
 parseNodes = (script) ->
     return coffeedoc.documentModule(script, parser)
@@ -383,7 +383,7 @@ describe 'RequireJSParser', ->
 
                      test2 = {val: false}
                      """
-            nodes = parser.getNodes(helpers.getNodes(script))
+            nodes = parser.getNodes(script)
             objs = parser.getObjects(nodes)
             expect(objs.length).toBe(2)
             expect(objs[0].variable.base.value).toBe('test1')
@@ -397,7 +397,7 @@ describe 'RequireJSParser', ->
 
                          test2 = {val: false}
                      """
-            nodes = parser.getNodes(helpers.getNodes(script))
+            nodes = parser.getNodes(script)
             objs = parser.getObjects(nodes)
             expect(objs.length).toBe(2)
             expect(objs[0].variable.base.value).toBe('test1')
@@ -411,7 +411,7 @@ describe 'RequireJSParser', ->
 
                          test2 = {val: false}
                      """
-            nodes = parser.getNodes(helpers.getNodes(script))
+            nodes = parser.getNodes(script)
             objs = parser.getObjects(nodes)
             expect(objs.length).toBe(2)
             expect(objs[0].variable.base.value).toBe('test1')

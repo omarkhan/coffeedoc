@@ -9,6 +9,7 @@ the CoffeeScript AST. Each parser class is specific to a module loading system
 option.
 ###
 
+coffeescript = require('coffee-script')
 helpers = require(__dirname + '/helpers')
 
 class BaseParser
@@ -16,6 +17,17 @@ class BaseParser
     This base class defines the interface for parsers. Subclasses should
     implement these methods.
     ###
+    getNodes: (script) ->
+        ###
+        Generates the AST from coffeescript source code.  Adds a 'type' attribute
+        to each node containing the name of the node's constructor, and returns
+        the expressions array
+        ###
+        rootNode = coffeescript.nodes(script)
+        rootNode.traverseChildren false, (node) ->
+            node.type = node.constructor.name
+        return [].concat(rootNode.expressions, rootNode)
+
     getDependencies: (nodes) ->
         ###
         Parse require statements and return a hash of module
@@ -87,7 +99,8 @@ class CommonJSParser extends BaseParser
 
 
 class RequireJSParser extends BaseParser
-    getNodes: (nodes, debug=false) ->
+    getNodes: (script) ->
+        nodes = super(script)
         result_nodes = []
         moduleLdrs = ['define', 'require']
         for root_node in nodes
@@ -100,12 +113,8 @@ class RequireJSParser extends BaseParser
                           arg.body.traverseChildren false, (node) ->
                               node.type = node.constructor.name
                               node.level = 2
-                              if debug
-                                  console.log(node)
                           result_nodes = result_nodes.concat(arg.body.expressions)
                       # TODO: Support objects passed to require or define
-              if debug
-                  console.log(node)
         return nodes.concat(result_nodes)
 
     _parseCall: (node, deps) ->

@@ -12,9 +12,6 @@ exports.getFullName = (variable) ->
     name = variable.base.value
     if variable.properties.length > 0
         name += '.' + (p.name.value for p in variable.properties).join('.')
-    if not name
-      names = variable.base.properties.map((p) -> p.base.value)
-      return "{#{names.join(', ')}}"
     return name
 
 exports.getAttr = (node, path) ->

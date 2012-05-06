@@ -75,18 +75,23 @@ class CommonJSParser extends BaseParser
 
         deps = {}
         for n in nodes when n.type == 'Assign'
-            if n.value.type == 'Call' and n.value.variable.base? and n.value.variable.base.value == 'require'
+            if n.value.type == 'Call' and n.value.variable.base?.value == 'require'
                 arg = n.value.args[0]
                 if arg.type == 'Value'
-                    module_path = stripQuotes(arg.base.value)
-                else if arg.type == 'Op' and arg.operator == '+'
-                    module_path = stripQuotes(arg.second.base.value)
-                    if module_path?
-                        module_path = module_path.replace(/^\//, '')
+                    modulePath = stripQuotes(arg.base.value)
+                else if arg.type == 'Op' and arg.operator == '+' and arg.first.base.value == '__dirname'
+                    modulePath = stripQuotes(arg.second.base.value)
+                    if modulePath?
+                        modulePath = modulePath.replace(/^\//, '')
                 else
                     continue
-                local_name = helpers.getFullName(n.variable)
-                deps[local_name] = module_path
+                if n.variable.base.type == 'Obj'
+                    vars = n.variable.base.properties
+                else
+                    vars = [n.variable]
+                for v in vars
+                    localName = helpers.getFullName(v)
+                    deps[localName] = modulePath
         return deps
 
     getClasses: (nodes) ->

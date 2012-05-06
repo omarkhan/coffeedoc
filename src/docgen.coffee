@@ -91,11 +91,13 @@ for source, idx in sources
         clspath = cls.parent.split('.')
         if clspath.length > 1
             prefix = clspath.shift()
-            if prefix of module.deps
-                modulepath = module.deps[prefix]
-                if path.join(path.dirname(source), modulepath) in moduleNames
-                    cls.parentModule = modulepath
-                    cls.parentName = clspath.join('.')
+        else
+            prefix = clspath[0]
+        if prefix of module.deps
+            modulepath = module.deps[prefix]
+            if path.join(path.dirname(source), modulepath) in moduleNames
+                cls.parentModule = modulepath
+                cls.parentName = clspath.join('.')
 
     modules.push(module)
 

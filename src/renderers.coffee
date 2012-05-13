@@ -11,7 +11,7 @@ path = require('path')
 eco = require('eco')
 traverse = require('traverse')
 highlight = require('highlight').Highlight
-showdown = require(__dirname + '/../vendor/showdown').Showdown
+marked = require('marked')
 
 
 class Renderer
@@ -23,6 +23,9 @@ class Renderer
     moduleTemplate: null
     indexFile: 'index'
     extension: ''
+
+    constructor: ->
+        marked.setOptions(highlight: (code, lang) -> highlight(code))
 
     renderIndex: (modules) =>
         eco.render(this.indexTemplate, modules: modules)
@@ -90,7 +93,7 @@ class HtmlRenderer extends Renderer
         ###
         module = traverse(module).map (value) ->
             if value and this.key == 'docstring'
-                this.update(highlight(showdown.makeHtml(value), false, true))
+                this.update(marked(value))
 
         basepath = path.relative(path.dirname(module.path), process.cwd())
         module.resourcepath = path.join(basepath, 'resources/')

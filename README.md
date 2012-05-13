@@ -111,8 +111,6 @@ docstrings.
 
 Docstrings are defined as the first herecomment block following the class or
 function definition. Note that regular single line comments will be ignored.
-Docstrings are passed through [Showdown][], a javascript port of Markdown
-(CoffeeDoc uses jashkenas' modified version of Showdown used in Docco).
 
 The resulting documentation information is then passed to an [eco][] template
 to generate the html output.
@@ -136,6 +134,5 @@ CoffeeDoc is © 2012 Omar Khan, released under the MIT licence. Use it, fork it.
 [Node.js]: http://nodejs.org/
 [eco]: http://github.com/sstephenson/eco
 [optimist]: http://github.com/substack/node-optimist
-[Showdown]: http://softwaremaniacs.org/playground/showdown-highlight/
 [Markdown]: http://daringfireball.net/projects/markdown/
 [Codo]: http://github.com/netzpirat/codo

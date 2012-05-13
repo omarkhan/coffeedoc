@@ -55,7 +55,7 @@ documentClass = (cls) ->
         cls = cls.value
     # Get docstring
     if cls.body.expressions.length <= 1
-        firstObj = cls.body.expressions[0].base?.properties?[0]
+        firstObj = cls.body.expressions[0]?.base?.properties?[0]
     else
         firstObj = cls.body.expressions[0]  
     if firstObj?.type == 'Comment'

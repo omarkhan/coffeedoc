@@ -221,7 +221,7 @@ class RequireJSParser extends BaseParser
             require = {deps: ["path/to/module"]}
             require = {deps: ["path/to/module"], callback: (module) ->}
 
-        And the following `require and `define` calls:
+        And the following `require` and `define` calls:
 
             require(["path/to/module"], (module) -> ...)
             require({}, ["path/to/module"], (module) -> ...)

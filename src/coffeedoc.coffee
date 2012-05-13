@@ -6,9 +6,8 @@ These functions extract relevant documentation info from AST nodes as returned
 by the coffeescript parser.
 ###
 
-helpers = require(__dirname + '/helpers')
-getNodes = helpers.getNodes
-getFullName = helpers.getFullName
+getFullName = require(__dirname + '/helpers').getFullName
+
 
 documentModule = (script, parser) ->
     ###
@@ -37,6 +36,7 @@ documentModule = (script, parser) ->
         functions: (documentFunction(f) for f in parser.getFunctions(nodes))
 
     return doc
+
 
 documentClass = (cls) ->
     ###
@@ -98,6 +98,7 @@ documentClass = (cls) ->
 
     return doc
 
+
 documentFunction = (func) ->
     ###
     Evaluates a function object as returned by the coffeescript parser,
@@ -131,6 +132,7 @@ documentFunction = (func) ->
         name: getFullName(func.variable)
         docstring: docstring
         params: params
+
 
 formatDocstring = (str) ->
     ###

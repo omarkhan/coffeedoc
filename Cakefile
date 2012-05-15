@@ -3,17 +3,19 @@ Coffeedoc Cakefile, adapted from [docco](http://jashkenas.github.com/docco/)
 by jashkenas
 ###
 
-{spawn, exec} = require 'child_process'
+exec = require('child_process').exec
+path = require('path')
 
 option '-p', '--prefix [DIR]', 'set the installation prefix for `cake install`'
 
 task 'install', 'install the `coffeedoc` command into /usr/local (or --prefix)', (options) ->
-  base = options.prefix or '/usr/local'
-  lib = base + '/lib/coffeedoc'
-  exec([
-    'mkdir -p ' + lib
-    'cp -rf bin README.md resources lib ' + lib
-    'ln -sf ' + lib + '/bin/coffeedoc ' + base + '/bin/coffeedoc'
-  ].join(' && '), (err, stdout, stderr) ->
-    if err then console.error stderr
-  )
+    base = options.prefix or '/usr/local'
+    lib = path.join(base, 'lib/coffeedoc')
+    exec([
+        'mkdir -p ' + lib
+        'cp -rf bin README.md resources src ' + lib
+        "ln -sf #{path.join(lib, 'bin/coffeedoc')} #{path.join(base, 'bin/coffeedoc')}"
+    ].join(' && '), (err, stdout, stderr) ->
+        if err
+            process.stderr.write(stderr)
+    )

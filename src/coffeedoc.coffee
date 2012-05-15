@@ -94,7 +94,7 @@ documentClass = (cls) ->
         instancemethods: (documentFunction(m) for m in instancemethods)
 
     for method in doc.staticmethods
-        method.name = method.name.replace(/^this/, doc.name)
+        method.name = method.name.replace(/^this\./, '')
 
     return doc
 

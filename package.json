@@ -32,5 +32,8 @@
   "devDependencies": {
     "jasmine-node": ">=1.0.6"
   },
-  "optionalDependencies": {}
+  "optionalDependencies": {},
+  "scripts": {
+    "test": "cake test"
+  }
 }

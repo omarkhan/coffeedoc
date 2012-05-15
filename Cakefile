@@ -19,3 +19,11 @@ task 'install', 'install the `coffeedoc` command into /usr/local (or --prefix)',
         if err
             process.stderr.write(stderr)
     )
+
+task 'test', 'run unit tests', (options) ->
+    exec('jasmine-node --coffee spec', (err, stdout, stderr) ->
+        if err
+            process.stderr.write(stderr)
+        else
+            process.stdout.write(stdout)
+    )

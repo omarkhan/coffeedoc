@@ -24,9 +24,6 @@ class Renderer
     indexFile: 'index'
     extension: ''
 
-    constructor: ->
-        marked.setOptions(highlight: (code, lang) -> highlight(code))
-
     renderIndex: (modules) =>
         eco.render(this.indexTemplate, modules: modules)
 
@@ -91,6 +88,7 @@ class HtmlRenderer extends Renderer
         Add the relative path to the resources directory to the documentation
         object so that generated pages know where to find css.
         ###
+        marked.setOptions(highlight: (code, lang) -> highlight(code))
         module = traverse(module).map (value) ->
             if value and this.key == 'docstring'
                 this.update(marked(value))

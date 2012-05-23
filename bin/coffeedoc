@@ -1,3 +1,3 @@
 #!/usr/bin/env coffee
 
-require(__dirname + '/../src/docgen')
+require(__dirname + '/../src/docgen').run()

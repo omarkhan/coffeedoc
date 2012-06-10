@@ -29,11 +29,12 @@ documentModule = (script, parser) ->
     else
         docstring = null
 
-    doc =
+    doc = {
         docstring: docstring
         deps: parser.getDependencies(nodes)
         classes: (documentClass(c) for c in parser.getClasses(nodes))
         functions: (documentFunction(f) for f in parser.getFunctions(nodes))
+    }
 
     return doc
 
@@ -86,12 +87,13 @@ documentClass = (cls) ->
     else
         parent = null
 
-    doc =
+    doc = {
         name: getFullName(cls.variable)
         docstring: docstring
         parent: parent
         staticmethods: (documentFunction(m) for m in staticmethods)
         instancemethods: (documentFunction(m) for m in instancemethods)
+    }
 
     for method in doc.staticmethods
         method.name = method.name.replace(/^this\./, '')
@@ -128,10 +130,11 @@ documentFunction = (func) ->
     else
         params = []
 
-    doc =
+    doc = {
         name: getFullName(func.variable)
         docstring: docstring
         params: params
+    }
 
 
 formatDocstring = (str) ->

@@ -144,9 +144,9 @@ class GithubWikiRenderer extends Renderer
         a = []
         for x in t
             if x?
-               a.push(x)
+                a.push(x)
             else
-               a.push('{splat}')
+                a.push('{splat}')
         return a.join(', ')
 
     preprocess: (module) =>

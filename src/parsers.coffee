@@ -109,17 +109,17 @@ class RequireJSParser extends BaseParser
         result_nodes = []
         moduleLdrs = ['define', 'require']
         for root_node in nodes
-          root_node.traverseChildren false, (node) ->
-              node.type = node.constructor.name
-              node.level = 1
-              if node.type is 'Call' and node.variable.base.value in moduleLdrs
-                  for arg in node.args
-                      if arg.constructor.name is 'Code'
-                          arg.body.traverseChildren false, (node) ->
-                              node.type = node.constructor.name
-                              node.level = 2
-                          result_nodes = result_nodes.concat(arg.body.expressions)
-                      # TODO: Support objects passed to require or define
+            root_node.traverseChildren false, (node) ->
+                node.type = node.constructor.name
+                node.level = 1
+                if node.type is 'Call' and node.variable.base.value in moduleLdrs
+                    for arg in node.args
+                        if arg.constructor.name is 'Code'
+                            arg.body.traverseChildren false, (node) ->
+                                node.type = node.constructor.name
+                                node.level = 2
+                            result_nodes = result_nodes.concat(arg.body.expressions)
+                        # TODO: Support objects passed to require or define
         return nodes.concat(result_nodes)
 
     _parseCall: (node, deps) ->
@@ -175,7 +175,7 @@ class RequireJSParser extends BaseParser
         for mod in mods
             local_name = if index < args.length then args[index] else mod
             deps[local_name] = mod
-            index++
+            index += 1
 
     _stripQuotes: (str) ->
         return str?.replace(/('|\")/g, '')

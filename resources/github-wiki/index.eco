@@ -1,8 +1,9 @@
 # Module index
-  <% for module in @modules: %>
+<% for module in @modules: %>
 ## [<%= module.path %>](./<%= module.wikiname %>)
+  <% if module.docstring: %>
+<%- module.docstring %>
   <% end %>
-  <% if module.docstring: %><%- module.docstring %><% end %>
   <% if module.classes.length > 0: %>
 #### Classes
     <% for cls in module.classes: %>
@@ -15,3 +16,4 @@
 * [<%= func.name %>](<%= module.wikiname %>#<%= func.name %>)
     <% end %>
   <% end %>
+<% end %>

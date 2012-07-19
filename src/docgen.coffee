@@ -30,6 +30,8 @@ exports.run = ->
         .alias('i', 'ignore')
         .describe('help', 'Show this help')
         .alias('h', 'help')
+        .describe('hide-private', 'Hide private class methods from output')
+        .boolean('hide-private')
 
     argv = opts.argv
 
@@ -61,6 +63,8 @@ exports.run = ->
         ignore = []
     ignore = (path.resolve(i) for i in ignore)
 
+    hideprivate = argv['hide-private']
+
     parser = new parsercls()
 
     # Get source file paths.
@@ -87,9 +91,10 @@ exports.run = ->
         module = coffeedoc.documentModule(script, parser)
         module.path = source
         module.basename = path.basename(source)
-
-        # Check for classes inheriting from classes in other modules.
-        for cls in module.classes when cls.parent
+        
+        for cls in module.classes
+          # Check for classes inheriting from classes in other modules.
+          if cls.parent
             clspath = cls.parent.split('.')
             if clspath.length > 1
                 prefix = clspath.shift()
@@ -100,6 +105,9 @@ exports.run = ->
                 if path.join(path.dirname(source), modulepath) in moduleNames
                     cls.parentModule = modulepath
                     cls.parentName = clspath.join('.')
+          # wipe out private methods here to have some behavior for any renderer 
+          if hideprivate
+            cls.privatemethods = []
 
         modules.push(module)
 

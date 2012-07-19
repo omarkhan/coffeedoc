@@ -446,3 +446,22 @@ describe 'RequireJSParser', ->
             expect(funcs.length).toBe(1)
             expect(funcs[0].name).toBe('test')
 
+    describe 'parse classes and', ->
+
+        it 'place private methods to private sections', ->
+            script = """
+                     class Test
+                         constructor: ->
+                         method1: ->
+                         method2: ->
+                         _method3: ->
+                         __method4: ->
+                     """
+            nodes = parseNodes(script)
+            my_class = nodes.classes[0]
+            expect(my_class.instancemethods.length).toBe(3)
+            expect(my_class.privatemethods.length).toBe(2)
+            ###
+            expect(classes[0].name).toBe('Test')
+            ###
+

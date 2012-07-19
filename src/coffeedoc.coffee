@@ -67,6 +67,7 @@ documentClass = (cls) ->
     # Get methods
     staticmethods = []
     instancemethods = []
+    privatemethods = []
     for expr in cls.body.expressions
         if expr.type == 'Value'
             for method in (n for n in expr.base.objects \
@@ -76,7 +77,10 @@ documentClass = (cls) ->
                     staticmethods.push(method)
                 else
                     # Method attached to prototype
-                    instancemethods.push(method)
+                    if method.variable.base.value?.match /^_/
+                        privatemethods.push(method)
+                    else
+                        instancemethods.push(method)
         else if expr.type == 'Assign' and expr.value.type == 'Code'
             # Static method
             if expr.variable.this # Only include public methods
@@ -93,6 +97,7 @@ documentClass = (cls) ->
         parent: parent
         staticmethods: (documentFunction(m) for m in staticmethods)
         instancemethods: (documentFunction(m) for m in instancemethods)
+        privatemethods: (documentFunction(m) for m in privatemethods) 
     }
 
     for method in doc.staticmethods

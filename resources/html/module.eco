@@ -78,6 +78,17 @@
                 <% end %>
               </div>
               <% end %>
+              <% if cls.privatemethods.length > 0: %>
+              <div class="privatemethods">
+                <h3>Private Methods</h3>
+                <% for method in cls.privatemethods: %>
+                <div class="method">
+                  <h4><%= method.name %>(<%= method.params.join(', ') %>)</h4>
+                  <% if method.docstring: %><%- method.docstring %><% end %>
+                </div>
+                <% end %>
+              </div>
+              <% end %>
             </div>
           </div>
         </div>

@@ -461,7 +461,3 @@ describe 'RequireJSParser', ->
             my_class = nodes.classes[0]
             expect(my_class.instancemethods.length).toBe(3)
             expect(my_class.privatemethods.length).toBe(2)
-            ###
-            expect(classes[0].name).toBe('Test')
-            ###
-

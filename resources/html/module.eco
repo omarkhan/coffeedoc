@@ -4,44 +4,44 @@
 
 <html>
 <head>
-  <title>CoffeeDoc | <%= @basename %></title>
+  <title>CoffeeDoc | <%= @module.basename %></title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="<%= @resourcepath %>base.css" />
+  <link rel="stylesheet" media="all" href="<%= @module.resourcepath %>base.css" />
 </head>
 <body>
   <header>
-    <h1><%= @basename %></h1>
+    <h1><%= @module.basename %></h1>
   </header>
   <div class="container">
     <div class="sidebar column">
-      <% if @classes.length > 0: %>
+      <% if @module.classes.length > 0: %>
       <h4>Classes</h4>
       <ul class="classlist">
-        <% for cls in @classes: %>
+        <% for cls in @module.classes: %>
         <li><a href="#<%= cls.name %>"><%= cls.name %></a></li>
         <% end %>
       </ul>
       <% end %>
-      <% if @functions.length > 0: %>
+      <% if @module.functions.length > 0: %>
       <h4>Functions</h4>
       <ul class="functionlist">
-        <% for func in @functions: %>
+        <% for func in @module.functions: %>
         <li><a href="#<%= func.name %>"><%= func.name %></a></li>
         <% end %>
       </ul>
       <% end %>
     </div>
     <div class="content column">
-      <% if @docstring: %>
+      <% if @module.docstring: %>
       <div id="module-docstring">
-        <%- @docstring %>
+        <%- @module.docstring %>
       </div>
       <% end %>
-      <% if @classes.length > 0: %>
+      <% if @module.classes.length > 0: %>
       <div id="classes">
         <h2>Classes</h2>
-        <% for cls in @classes: %>
+        <% for cls in @module.classes: %>
         <div class="class">
           <div class="header">
             <a id="<%= cls.name.replace /^exports\./, '' %>"><h3><%= cls.name %></h3></a>
@@ -78,7 +78,7 @@
                 <% end %>
               </div>
               <% end %>
-              <% if cls.privatemethods.length > 0: %>
+              <% if not @options.hideprivate and cls.privatemethods.length > 0: %>
               <div class="privatemethods">
                 <h3>Private Methods</h3>
                 <% for method in cls.privatemethods: %>
@@ -95,10 +95,10 @@
         <% end %>
       </div>
       <% end %>
-      <% if @functions.length > 0: %>
+      <% if @module.functions.length > 0: %>
       <div id="functions">
         <h2>Functions</h2>
-        <% for func in @functions: %>
+        <% for func in @module.functions: %>
         <div class="function">
           <div class="header">
             <a id="<%= func.name %>"><h3><%= func.name %>(<%= func.params.join(', ') %>)</h3></a>

@@ -24,11 +24,14 @@ class Renderer
     indexFile: 'index'
     extension: ''
 
+    constructor: (options) ->
+        this.options = options
+
     renderIndex: (modules) =>
-        eco.render(this.indexTemplate, modules: modules)
+        eco.render(this.indexTemplate, { modules: modules })
 
     renderModule: (module) =>
-        eco.render(this.moduleTemplate, module)
+        eco.render(this.moduleTemplate, { module: module, options: this.options })
 
     _createOutputDir: (outputdir) ->
         ###

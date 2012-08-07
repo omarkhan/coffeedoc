@@ -63,8 +63,6 @@ exports.run = ->
         ignore = []
     ignore = (path.resolve(i) for i in ignore)
 
-    hideprivate = argv['hide-private']
-
     parser = new parsercls()
 
     # Get source file paths.
@@ -79,7 +77,7 @@ exports.run = ->
     getSourceFiles(o) for o in argv._
     sources.sort()
 
-    renderer = new rendercls()
+    renderer = new rendercls({ hideprivate: argv['hide-private'] })
 
     # Build a hash with documentation information for each source file.
     modules = []
@@ -93,21 +91,18 @@ exports.run = ->
         module.basename = path.basename(source)
         
         for cls in module.classes
-          # Check for classes inheriting from classes in other modules.
-          if cls.parent
-            clspath = cls.parent.split('.')
-            if clspath.length > 1
-                prefix = clspath.shift()
-            else
-                prefix = clspath[0]
-            if prefix of module.deps
-                modulepath = module.deps[prefix]
-                if path.join(path.dirname(source), modulepath) in moduleNames
-                    cls.parentModule = modulepath
-                    cls.parentName = clspath.join('.')
-          # wipe out private methods here to have some behavior for any renderer 
-          if hideprivate
-            cls.privatemethods = []
+            # Check for classes inheriting from classes in other modules.
+            if cls.parent
+                clspath = cls.parent.split('.')
+                if clspath.length > 1
+                    prefix = clspath.shift()
+                else
+                    prefix = clspath[0]
+                if prefix of module.deps
+                    modulepath = module.deps[prefix]
+                    if path.join(path.dirname(source), modulepath) in moduleNames
+                        cls.parentModule = modulepath
+                        cls.parentName = clspath.join('.')
 
         modules.push(module)
 

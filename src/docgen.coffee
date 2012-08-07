@@ -30,7 +30,7 @@ exports.run = ->
         .alias('i', 'ignore')
         .describe('help', 'Show this help')
         .alias('h', 'help')
-        .describe('hide-private', 'Hide private class methods from output')
+        .describe('hide-private', 'Do not document methods beginning with an underscore')
         .boolean('hide-private')
 
     argv = opts.argv

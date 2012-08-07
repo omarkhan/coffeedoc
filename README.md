@@ -78,7 +78,7 @@ CoffeeDoc can be run from the command line:
       --stdout        Direct all output to stdout instead of files           [boolean]
       --ignore, -i    Files or directories to ignore                       
       --help, -h      Show this help                                       
-      --hide-private  Hide private class methods from output                 [boolean]
+      --hide-private  Do not document methods beginning with an underscore   [boolean]
 
 If [targets] is a directory, CoffeeDoc will recursively document all `.coffee`
 files found under that directory.

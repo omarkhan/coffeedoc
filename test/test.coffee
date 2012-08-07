@@ -74,3 +74,12 @@ tabFunc = (args) ->
 		Code block here...
     ###
     return null
+
+class MyMethodsArePrivate
+    _secretFunc: (x) ->
+        ### Nobody knows what this does but me ###
+        return x
+
+    publicFunc: (x) ->
+        ### This should be documented ###
+        return x

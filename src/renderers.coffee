@@ -78,9 +78,6 @@ class Renderer
 
 class HtmlRenderer extends Renderer
 
-    indexTemplate: fs.readFileSync(__dirname + '/../resources/html/index.eco', 'utf-8')
-    moduleTemplate: fs.readFileSync(__dirname + '/../resources/html/module.eco', 'utf-8')
-    baseCss: fs.readFileSync(__dirname + '/../resources/html/base.css', 'utf-8')
     extension: '.html'
 
     preprocess: (module) =>
@@ -119,6 +116,14 @@ class HtmlRenderer extends Renderer
         resourcesdir = path.join(outputdir, 'resources')
         fs.mkdir resourcesdir, '755', =>
             fs.writeFile(path.join(resourcesdir, 'base.css'), this.baseCss)
+    
+    constructor: (options) ->
+        unless options?.htmlTemplatePath?
+            options.htmlTemplatePath = __dirname + '/../resources/html/'
+        @indexTemplate = fs.readFileSync(options.htmlTemplatePath + '/index.eco', 'utf-8')
+        @moduleTemplate = fs.readFileSync(options.htmlTemplatePath + '/module.eco', 'utf-8')
+        @baseCss = fs.readFileSync(options.htmlTemplatePath + '/base.css', 'utf-8')
+        super( options )
 
 
 class GithubWikiRenderer extends Renderer

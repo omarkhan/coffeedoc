@@ -32,6 +32,8 @@ exports.run = ->
         .alias('h', 'help')
         .describe('hide-private', 'Do not document methods beginning with an underscore')
         .boolean('hide-private')
+        .describe('htmlTemplate', "Directory with some eco-based template for the html-renderer")
+        .default("htmlTemplate", null )
 
     argv = opts.argv
 
@@ -77,7 +79,7 @@ exports.run = ->
     getSourceFiles(o) for o in argv._
     sources.sort()
 
-    renderer = new rendercls({ hideprivate: argv['hide-private'] })
+    renderer = new rendercls({ hideprivate: argv['hide-private'], htmlTemplatePath: argv.htmlTemplate })
 
     # Build a hash with documentation information for each source file.
     modules = []

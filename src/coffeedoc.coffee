@@ -54,12 +54,9 @@ documentClass = (cls) ->
     if cls.type == 'Assign'
         # Class assigned to variable -- ignore the variable definition
         cls = cls.value
+
     # Get docstring
-    if cls.body.expressions.length > 0
-        firstObj = cls.body.expressions[0]?.base?.properties?[0]
-    else
-        # TODO: Why do we require this?
-        firstObj = cls.body.expressions[0]
+    firstObj = cls.body.expressions[0]
     if firstObj?.type == 'Comment'
         docstring = formatDocstring(firstObj.comment)
     else

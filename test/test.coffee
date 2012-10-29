@@ -41,6 +41,11 @@ class Subclass extends MyClass
 
 class EmptyClass extends MyClass
 
+class EmptyClassWithDocstring
+    ###
+    This class doesn't do anything, but I'm documenting it anyway.
+    ###
+
 
 class Subclass2 extends my_module.BaseClass
     ###
@@ -53,6 +58,15 @@ class LibClass extends lib.Lib
 
 class SubThing extends Thing
     ### Does this work with `{Thing} = require 'thing'` syntax? ###
+
+class MyMethodsArePrivate
+    _secretFunc: (x) ->
+        ### Nobody knows what this does but me ###
+        return x
+
+    publicFunc: (x) ->
+        ### This should be documented ###
+        return x
 
 # Functions
 
@@ -74,12 +88,3 @@ tabFunc = (args) ->
 		Code block here...
     ###
     return null
-
-class MyMethodsArePrivate
-    _secretFunc: (x) ->
-        ### Nobody knows what this does but me ###
-        return x
-
-    publicFunc: (x) ->
-        ### This should be documented ###
-        return x

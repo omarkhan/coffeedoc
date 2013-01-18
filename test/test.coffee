@@ -68,6 +68,10 @@ class MyMethodsArePrivate
         ### This should be documented ###
         return x
 
+class Strict
+  ### So very strict ###
+  "use strict"
+
 # Functions
 
 myFunc = (arg1, arg2) ->

@@ -67,7 +67,7 @@ documentClass = (cls) ->
     instancemethods = []
     privatemethods = []
     for expr in cls.body.expressions
-        if expr.type == 'Value'
+        if expr.type == 'Value' and expr.base.objects
             for method in (n for n in expr.base.objects \
                            when n.type == 'Assign' and n.value.type == 'Code')
                 if method.variable.this

@@ -28,7 +28,7 @@ class Renderer
         this.options = options
 
     renderIndex: (modules) =>
-        eco.render(this.indexTemplate, { modules: modules })
+        eco.render(this.indexTemplate, { modules: modules, options: this.options })
 
     renderModule: (module) =>
         eco.render(this.moduleTemplate, { module: module, options: this.options })

@@ -37,11 +37,16 @@
             <% end %>
           </ul>
           <% end %>
-          <% if module.functions.length > 0: %>
+          <% if module.functions.length > 0 or (not @options.hideprivate and module.privateFunctions.length > 0): %>
           <h3>Functions</h3>
           <ul class="functionlist">
             <% for func in module.functions: %>
             <li><a href="<%= module.path %>.html#<%= func.name %>"><%= func.name %>(<%= func.params.join(', ') %>)</a></li>
+            <% end %>
+            <% if not @options.hideprivate: %>
+              <% for func in module.privateFunctions: %>
+              <li><a href="<%= module.path %>.html#<%= func.name %>"><%= func.name %>(<%= func.params.join(', ') %>)</a></li>
+              <% end %>
             <% end %>
           </ul>
           <% end %>

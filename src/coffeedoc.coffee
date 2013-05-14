@@ -29,11 +29,13 @@ documentModule = (script, parser) ->
     else
         docstring = null
 
+    allFunctions = parser.getFunctions(nodes)
     doc = {
         docstring: docstring
         deps: parser.getDependencies(nodes)
         classes: (documentClass(c) for c in parser.getClasses(nodes))
-        functions: (documentFunction(f) for f in parser.getFunctions(nodes))
+        functions: (documentFunction(f) for f in allFunctions when not _isPrivateFunction(f))
+        privateFunctions: (documentFunction(f) for f in allFunctions when _isPrivateFunction(f))
     }
 
     return doc
@@ -43,7 +45,7 @@ documentClass = (cls) ->
     ###
     Evaluates a class object as returned by the coffeescript parser, returning
     an object of the form:
-    
+
         {
             "name": "MyClass",
             "docstring": "First comment following the class definition"
@@ -95,7 +97,7 @@ documentClass = (cls) ->
         parent: parent
         staticmethods: (documentFunction(m) for m in staticmethods)
         instancemethods: (documentFunction(m) for m in instancemethods)
-        privatemethods: (documentFunction(m) for m in privatemethods) 
+        privatemethods: (documentFunction(m) for m in privatemethods)
     }
 
     for method in doc.staticmethods
@@ -108,7 +110,7 @@ documentFunction = (func) ->
     ###
     Evaluates a function object as returned by the coffeescript parser,
     returning an object of the form:
-    
+
         {
             "name": "myFunc",
             "docstring": "First comment following the function definition",
@@ -163,5 +165,7 @@ formatDocstring = (str) ->
     leading_whitespace = new RegExp("^\\s{#{ indentation }}")
     return (line.replace(leading_whitespace, '') for line in lines).join('\n')
 
+
+_isPrivateFunction = (func) -> func.variable.base.value.match /^_/
 
 exports.documentModule = documentModule

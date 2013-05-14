@@ -20,7 +20,7 @@ class MyClass
     ###
     constructor: ->
         ### Initialise it! ###
-    
+
     myMethod: =>
         ### Bound method of MyClass ###
 
@@ -80,6 +80,13 @@ myFunc = (arg1, arg2) ->
     ###
     return null
 
+_myFunc = (arg1, arg2) ->
+    ###
+    This is a top-level function, and will be documented only if the hiding
+    private option is not set.
+    ###
+    return null
+
 myFunc2 = (arg, splat...) ->
     ### Another function, with a splat argument ###
     return splat[0] if splat.length > 0
@@ -88,7 +95,7 @@ myFunc2 = (arg, splat...) ->
 tabFunc = (args) ->
     ###
 	This docstring uses tabs for indentation
-	
+
 		Code block here...
     ###
     return null

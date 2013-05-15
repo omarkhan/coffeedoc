@@ -95,7 +95,7 @@
         <% end %>
       </div>
       <% end %>
-      <% if @module.functions.length > 0: %>
+      <% if @module.functions.length > 0 or (not @options.hideprivate and @module.privateFunctions.length > 0): %>
       <div id="functions">
         <h2>Functions</h2>
         <% for func in @module.functions: %>
@@ -109,6 +109,20 @@
           </div>
           <% end %>
         </div>
+        <% end %>
+        <% if not @options.hideprivate: %>
+          <% for func in @module.privateFunctions: %>
+          <div class="function">
+            <div class="header">
+              <a id="<%= func.name %>"><h3><%= func.name %>(<%= func.params.join(', ') %>)</h3></a>
+            </div>
+            <% if func.docstring: %>
+            <div>
+              <%- func.docstring %>
+            </div>
+            <% end %>
+          </div>
+          <% end %>
         <% end %>
       </div>
       <% end %>

@@ -50,7 +50,8 @@ documentClass = (cls) ->
             "name": "MyClass",
             "docstring": "First comment following the class definition"
             "parent": "MySuperClass",
-            "methods": [method1, method2...]
+            "methods": [method1, method2...],
+            "lineno": 123
         }
     ###
     if cls.type == 'Assign'
@@ -93,6 +94,7 @@ documentClass = (cls) ->
 
     doc = {
         name: getFullName(cls.variable)
+        lineno: cls.variable.locationData.first_line
         docstring: docstring
         parent: parent
         staticmethods: (documentFunction(m) for m in staticmethods)
@@ -114,7 +116,8 @@ documentFunction = (func) ->
         {
             "name": "myFunc",
             "docstring": "First comment following the function definition",
-            "params": ["param1", "param2"...]
+            "params": ["param1", "param2"...],
+            "lineno": 123
         }
     ###
     # Get docstring
@@ -137,6 +140,7 @@ documentFunction = (func) ->
 
     doc = {
         name: getFullName(func.variable)
+        lineno: func.variable.locationData.first_line
         docstring: docstring
         params: params
     }

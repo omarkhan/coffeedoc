@@ -58,8 +58,15 @@ documentClass = (cls) ->
         # Class assigned to variable -- ignore the variable definition
         cls = cls.value
 
+    expressions = cls.body.expressions
+    firstObj = expressions[0]
+
+    # Classes that do not inherit from other classes seem to end up with a
+    # different representation in the AST
+    if expressions.length == 1 and firstObj.base?.type == 'Obj'
+        firstObj = firstObj.base.objects[0]
+
     # Get docstring
-    firstObj = cls.body.expressions[0]
     if firstObj?.type == 'Comment'
         docstring = formatDocstring(firstObj.comment)
     else
@@ -69,7 +76,7 @@ documentClass = (cls) ->
     staticmethods = []
     instancemethods = []
     privatemethods = []
-    for expr in cls.body.expressions
+    for expr in expressions
         if expr.type == 'Value' and expr.base.objects
             for method in (n for n in expr.base.objects \
                            when n.type == 'Assign' and n.value.type == 'Code')

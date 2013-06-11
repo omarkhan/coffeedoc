@@ -63,7 +63,7 @@ documentClass = (cls) ->
 
     # Classes that do not inherit from other classes seem to end up with a
     # different representation in the AST
-    if expressions.length == 1 and firstObj.base?.type == 'Obj'
+    if firstObj?.base?.type == 'Obj'
         firstObj = firstObj.base.objects[0]
 
     # Get docstring

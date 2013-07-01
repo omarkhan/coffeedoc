@@ -35,5 +35,9 @@
   "optionalDependencies": {},
   "scripts": {
     "test": "cake test"
+  },
+  "repository" : {
+    "type" : "git",
+    "url" : "http://github.com/omarkhan/coffeedoc.git"
   }
 }

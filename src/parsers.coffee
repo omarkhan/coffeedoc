@@ -44,13 +44,15 @@ class BaseParser
         Return an array of class nodes. Be sure to include classes that are
         assigned to variables, e.g. `exports.MyClass = class MyClass`
         ###
-        return []
+        return (n for n in nodes when n.type == 'Class' \
+                or n.type == 'Assign' and n.value.type == 'Class')
 
     getFunctions: (nodes) ->
         ###
         Return an array of function nodes.
         ###
-        return []
+        return (n for n in nodes \
+                when n.type == 'Assign' and n.value.type == 'Code')
 
 
 class CommonJSParser extends BaseParser
@@ -94,16 +96,9 @@ class CommonJSParser extends BaseParser
                     deps[localName] = modulePath
         return deps
 
-    getClasses: (nodes) ->
-        return (n for n in nodes when n.type == 'Class' \
-                or n.type == 'Assign' and n.value.type == 'Class')
-
-    getFunctions: (nodes) ->
-        return (n for n in nodes \
-                when n.type == 'Assign' and n.value.type == 'Code')
-
 
 class RequireJSParser extends BaseParser
+
     getNodes: (script) ->
         nodes = super(script)
         result_nodes = []
@@ -240,14 +235,6 @@ class RequireJSParser extends BaseParser
                          and n.value.base.type is 'Obj')
                     this._parseObject(n, deps)
         return deps
-
-    getClasses: (nodes) ->
-        return (n for n in nodes when n.type == 'Class' \
-                or n.type == 'Assign' and n.value.type == 'Class')
-
-    getFunctions: (nodes) ->
-        return (n for n in nodes \
-                when n.type == 'Assign' and n.value.type == 'Code')
 
 
 exports.commonjs  = CommonJSParser

@@ -8,7 +8,7 @@
     "coffeescript"
   ],
   "author": "Omar Khan",
-  "version": "0.2.11",
+  "version": "0.3.0",
   "licenses": [
     {
       "type": "MIT",
@@ -36,8 +36,8 @@
   "scripts": {
     "test": "cake test"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "http://github.com/omarkhan/coffeedoc.git"
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/omarkhan/coffeedoc.git"
   }
 }

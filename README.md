@@ -72,13 +72,15 @@ CoffeeDoc can be run from the command line:
     Usage: coffeedoc [options] [targets]
 
     Options:
-      --output, -o    Set output directory                                   [default: "docs"]
-      --parser        Parser to use. Available parsers: commonjs, requirejs  [default: "commonjs"]
-      --renderer      Renderer to use. Available renderers: html, gfm, json  [default: "html"]
-      --stdout        Direct all output to stdout instead of files           [boolean]
-      --ignore, -i    Files or directories to ignore                       
-      --help, -h      Show this help                                       
-      --hide-private  Do not document methods beginning with an underscore   [boolean]
+      --output, -o      Set output directory                                            [default: "docs"]
+      --ignore, -i      Files or directories to ignore
+      --stdout          Direct all output to stdout instead of files
+      --hide-private    Do not document methods beginning with an underscore
+      --parser          Parser to use. Built-in parsers: commonjs, requirejs            [default: "commonjs"]
+      --renderer        Renderer to use. Built-in renderers: html, gfm, json            [default: "html"]
+      --indexTemplate   Override the default index template for the selected renderer
+      --moduleTemplate  Override the default module template for the selected renderer
+      --help, -h        Show this help and exit
 
 If [targets] is a directory, CoffeeDoc will recursively document all `.coffee`
 files found under that directory.

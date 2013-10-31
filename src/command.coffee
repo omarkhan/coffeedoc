@@ -20,9 +20,9 @@ exports.run = ->
         .describe('output', 'Set output directory')
         .default('output', 'docs')
         .alias('o', 'output')
-        .describe('parser', "Parser to use. Available parsers: #{Object.keys(parsers).join(', ')}")
+        .describe('parser', "Parser to use. Built-in parsers: #{Object.keys(parsers).join(', ')}")
         .default('parser', 'commonjs')
-        .describe('renderer', "Renderer to use. Available renderers: #{Object.keys(renderers).join(', ')}")
+        .describe('renderer', "Renderer to use. Built-in renderers: #{Object.keys(renderers).join(', ')}")
         .default('renderer', 'html')
         .describe('stdout', 'Direct all output to stdout instead of files')
         .boolean('stdout')
@@ -39,13 +39,13 @@ exports.run = ->
         opts.showHelp()
         process.exit()
 
-    rendercls = renderers[argv.renderer]
+    rendercls = renderers[argv.renderer] or require(argv.renderer)
     if not rendercls?
         console.error "Invalid renderer: #{argv.renderer}\n"
         opts.showHelp()
         process.exit()
 
-    parsercls = parsers[argv.parser]
+    parsercls = parsers[argv.parser] or require(argv.parser)
     if not parsercls?
         console.error "Invalid parser: #{argv.parser}\n"
         opts.showHelp()

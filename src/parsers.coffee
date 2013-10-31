@@ -14,7 +14,7 @@ helpers = require(__dirname + '/helpers')
 
 class BaseParser
     ###
-    This base class defines the interface for parsers. Subclasses should
+    This base class defines the interface for parsers. Custom parsers should
     implement these methods.
     ###
     getNodes: (script) ->

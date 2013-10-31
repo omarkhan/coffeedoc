@@ -16,8 +16,8 @@ marked = require('marked')
 
 class Renderer
     ###
-    Base class for renderers. To create a new renderer, subclass this and
-    override the necessary properties and methods.
+    Base class for built-in renderers. Custom renderers should follow the API
+    defined here.
     ###
     indexTemplate: null
     moduleTemplate: null

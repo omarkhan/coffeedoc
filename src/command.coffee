@@ -17,23 +17,33 @@ exports.run = ->
     # Command line options
     opts = require('optimist')
         .usage('''Usage: coffeedoc [options] [targets]''')
-        .describe('output', 'Set output directory')
-        .default('output', 'docs')
-        .alias('o', 'output')
-        .describe('parser', "Parser to use. Built-in parsers: #{Object.keys(parsers).join(', ')}")
-        .default('parser', 'commonjs')
-        .describe('renderer', "Renderer to use. Built-in renderers: #{Object.keys(renderers).join(', ')}")
-        .default('renderer', 'html')
-        .describe('stdout', 'Direct all output to stdout instead of files')
-        .boolean('stdout')
-        .describe('ignore', 'Files or directories to ignore')
-        .alias('i', 'ignore')
-        .describe('hide-private', 'Do not document methods beginning with an underscore')
-        .boolean('hide-private')
-        .describe('indexTemplate', 'Override the default index template for the selected renderer')
-        .describe('moduleTemplate', 'Override the default module template for the selected renderer')
-        .describe('help', 'Show this help and exit')
-        .alias('h', 'help')
+        .options
+            'output':
+                describe: 'Set output directory'
+                alias: 'o'
+                default: 'docs'
+            'ignore':
+                describe: 'Files or directories to ignore'
+                alias: 'i'
+            'stdout':
+                describe: 'Direct all output to stdout instead of files'
+                boolean: true
+            'hide-private':
+                describe: 'Do not document methods beginning with an underscore'
+                boolean: true
+            'parser':
+                describe: "Parser to use. Built-in parsers: #{Object.keys(parsers).join(', ')}"
+                default: 'commonjs'
+            'renderer':
+                describe: "Renderer to use. Built-in renderers: #{Object.keys(renderers).join(', ')}"
+                default: 'html'
+            'indexTemplate':
+                describe: 'Override the default index template for the selected renderer'
+            'moduleTemplate':
+                describe: 'Override the default module template for the selected renderer'
+            'help':
+                describe: 'Show this help and exit'
+                alias: 'h'
 
     argv = opts.argv
 

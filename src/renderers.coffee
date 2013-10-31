@@ -25,7 +25,12 @@ class Renderer
     extension: ''
 
     constructor: (options) ->
-        this.options = options
+        this.options = {}
+        for key, val of options
+            if key of this
+                this[key] = val
+            else
+                this.options[key] = val
 
     renderIndex: (modules) =>
         eco.render(this.indexTemplate, {

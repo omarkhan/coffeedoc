@@ -28,10 +28,12 @@ exports.run = ->
         .boolean('stdout')
         .describe('ignore', 'Files or directories to ignore')
         .alias('i', 'ignore')
-        .describe('help', 'Show this help')
-        .alias('h', 'help')
         .describe('hide-private', 'Do not document methods beginning with an underscore')
         .boolean('hide-private')
+        .describe('indexTemplate', 'Override the default index template for the selected renderer')
+        .describe('moduleTemplate', 'Override the default module template for the selected renderer')
+        .describe('help', 'Show this help and exit')
+        .alias('h', 'help')
 
     argv = opts.argv
 
@@ -39,17 +41,26 @@ exports.run = ->
         opts.showHelp()
         process.exit()
 
+    # Instantiate the renderer
     rendercls = renderers[argv.renderer] or require(argv.renderer)
     if not rendercls?
         console.error "Invalid renderer: #{argv.renderer}\n"
         opts.showHelp()
         process.exit()
+    rendererOpts = { hideprivate: argv['hide-private'] }
+    if argv.indexTemplate
+        rendererOpts.indexTemplate = fs.readFileSync(argv.indexTemplate, 'utf-8')
+    if argv.moduleTemplate
+        rendererOpts.moduleTemplate = fs.readFileSync(argv.moduleTemplate, 'utf-8')
+    renderer = new rendercls(rendererOpts)
 
+    # Instantiate the parser
     parsercls = parsers[argv.parser] or require(argv.parser)
     if not parsercls?
         console.error "Invalid parser: #{argv.parser}\n"
         opts.showHelp()
         process.exit()
+    parser = new parsercls()
 
     if argv.stdout
         argv.output = null
@@ -63,8 +74,6 @@ exports.run = ->
         ignore = []
     ignore = (path.resolve(i) for i in ignore)
 
-    parser = new parsercls()
-
     # Get source file paths.
     sources = []
     getSourceFiles = (target) ->
@@ -76,8 +85,6 @@ exports.run = ->
             getSourceFiles(path.join(target, p)) for p in fs.readdirSync(target)
     getSourceFiles(o) for o in argv._
     sources.sort()
-
-    renderer = new rendercls({ hideprivate: argv['hide-private'] })
 
     # Build a hash with documentation information for each source file.
     modules = []

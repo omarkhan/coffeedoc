@@ -106,5 +106,26 @@ exports.run = ->
 
         modules.push(module)
 
-    # Generate the documentation.
-    renderer.render(modules, argv.output)
+    # Generate the index page. If no output dir is given, write it to stdout
+    # and exit.
+    index = renderer.renderIndex(modules)
+    if not argv.output
+        process.stdout.write(index)
+        process.exit()
+
+    # Create output directory, recursively deleting it if it already exists.
+    if fs.existsSync(argv.output)
+        rm = (target) ->
+            if fs.statSync(target).isDirectory()
+                rm(path.join(target, p)) for p in fs.readdirSync(target)
+                fs.rmdirSync(target)
+            else
+                fs.unlinkSync(target)
+        rm(argv.output)
+    fs.mkdirSync(argv.output, '755')
+
+    # Write the index page.
+    fs.writeFile(path.join(argv.output, renderer.indexFile + renderer.extension), index)
+
+    # Write documentation for each module.
+    renderer.writeModules(modules, argv.output)

@@ -28,24 +28,16 @@ class Renderer
         this.options = options
 
     renderIndex: (modules) =>
-        eco.render(this.indexTemplate, { modules: modules, options: this.options })
+        eco.render(this.indexTemplate, {
+            modules: modules.map(this.preprocess)
+            options: this.options
+        })
 
     renderModule: (module) =>
-        eco.render(this.moduleTemplate, { module: module, options: this.options })
-
-    _createOutputDir: (outputdir) ->
-        ###
-        Create output directory, recursively deleting it if it already exists.
-        ###
-        if fs.existsSync(outputdir)
-            rm = (target) ->
-                if fs.statSync(target).isDirectory()
-                    rm(path.join(target, p)) for p in fs.readdirSync(target)
-                    fs.rmdirSync(target)
-                else
-                    fs.unlinkSync(target)
-            rm(outputdir)
-        fs.mkdirSync(outputdir, '755')
+        eco.render(this.moduleTemplate, {
+            module: this.preprocess(module)
+            options: this.options
+        })
 
     preprocess: (module) ->
         ###
@@ -54,26 +46,8 @@ class Renderer
         ###
         return module
 
-    write: (modules, outputdir) =>
-        ###
-        Render the documentation and generate output for the user. This method
-        writes the generated index page to `outputdir`, overwriting the
-        directory if it exists. If `outputdir` is not given, prints the index
-        page to stdout and exits.
-
-        This method does not write the documentation for individual modules.
-        Subclasses should override `write` and implement this themselves.
-        ###
-        index = this.renderIndex(modules)
-        if not outputdir
-            process.stdout.write(index)
-            process.exit()
-
-        this._createOutputDir(outputdir)
-        fs.writeFile(path.join(outputdir, this.indexFile + this.extension), index)
-
-    render: (modules, outputdir) =>
-        this.write((this.preprocess(m) for m in modules), outputdir)
+    writeModules: (modules, outputdir) =>
+        ### Subclasses should implement this. ###
 
 
 class HtmlRenderer extends Renderer
@@ -101,8 +75,7 @@ class HtmlRenderer extends Renderer
 
         return module
 
-    write: (modules, outputdir) =>
-        super(modules, outputdir)
+    writeModules: (modules, outputdir) =>
 
         # Recreate source directory structure and write module documentation.
         for module in modules
@@ -158,8 +131,7 @@ class GithubWikiRenderer extends Renderer
         module.params = this._params
         return module
 
-    write: (modules, outputdir) =>
-        super(modules, outputdir)
+    writeModules: (modules, outputdir) =>
         for module in modules
             outfile = path.join(outputdir, module.wikiname + this.extension)
             fs.writeFile(outfile, this.renderModule(module))

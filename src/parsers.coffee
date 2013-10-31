@@ -245,13 +245,10 @@ class RequireJSParser extends BaseParser
         return (n for n in nodes when n.type == 'Class' \
                 or n.type == 'Assign' and n.value.type == 'Class')
 
-    getObjects: (nodes) ->
-        return (n for n in nodes when n.type == 'Assign' \
-                and helpers.getAttr(n, 'value.base').type == 'Obj')
-
     getFunctions: (nodes) ->
         return (n for n in nodes \
                 when n.type == 'Assign' and n.value.type == 'Code')
+
 
 exports.commonjs  = CommonJSParser
 exports.requirejs = RequireJSParser

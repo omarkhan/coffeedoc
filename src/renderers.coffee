@@ -37,7 +37,7 @@ class Renderer
         ###
         Create output directory, recursively deleting it if it already exists.
         ###
-        if path.existsSync(outputdir)
+        if fs.existsSync(outputdir)
             rm = (target) ->
                 if fs.statSync(target).isDirectory()
                     rm(path.join(target, p)) for p in fs.readdirSync(target)
@@ -110,7 +110,7 @@ class HtmlRenderer extends Renderer
             dirs = path.dirname(path.normalize(module.path)).split('/')
             for dir in dirs
                 docpath = path.join(docpath, dir)
-                if not path.existsSync(docpath)
+                if not fs.existsSync(docpath)
                     fs.mkdirSync(docpath, '755')
             outfile = path.join(outputdir, module.path + this.extension)
             fs.writeFile(outfile, this.renderModule(module))

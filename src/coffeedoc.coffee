@@ -16,8 +16,10 @@ documentModule = (script, parser) ->
 
         {
             "docstring": "Module docstring",
+            "deps": {"dep1": "foo", "dep2": "bar/baz", ...},
             "classes": [class1, class1...],
-            "functions": [func1, func2...]
+            "functions": [func1, func2...],
+            "privateFunctions": [func1, func2...]
         }
 
     AST parsers are defined in the `parsers.coffee` module
@@ -29,16 +31,31 @@ documentModule = (script, parser) ->
     else
         docstring = null
 
-    allFunctions = parser.getFunctions(nodes)
-    doc = {
-        docstring: docstring
-        deps: parser.getDependencies(nodes)
-        classes: (documentClass(c) for c in parser.getClasses(nodes))
-        functions: (documentFunction(f) for f in allFunctions when not _isPrivateFunction(f))
-        privateFunctions: (documentFunction(f) for f in allFunctions when _isPrivateFunction(f))
-    }
+    deps = parser.getDependencies(nodes)
+    functionNodes = parser.getFunctions(nodes)
+    classNodes = parser.getClasses(nodes)
 
-    return doc
+    classes = []
+    functions = []
+    privateFunctions = []
+
+    classLookup = {}
+    for node in classNodes
+        cls = documentClass(node)
+        classes.push(cls)
+        classLookup[cls.name] = cls
+
+    for node in functionNodes
+        func = documentFunction(node)
+        if _isPrivateFunction(node)
+            privateFunctions.push(func)
+        else if cls = classLookup[node.variable.base.value]
+            func.name = func.name[cls.name.length+1..]
+            cls.staticmethods.push(func)
+        else
+            functions.push(func)
+
+    return {docstring, deps, classes, functions, privateFunctions}
 
 
 documentClass = (cls) ->

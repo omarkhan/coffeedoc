@@ -72,6 +72,14 @@ class Strict
   ### So very strict ###
   "use strict"
 
+class StaticMethods
+
+    @static1 = ->
+        ### Static method declared inside of class ###
+
+StaticMethods.static2 = ->
+    ### Static method declared outside of class ###
+
 # Functions
 
 myFunc = (arg1, arg2) ->
